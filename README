@@ -1,0 +1,25 @@
+1. Setting up virtualenv.
+
+Get it with either:
+
+a) easy_install
+sudo apt-get install python-setuptools
+sudo easy_install virtualenv
+
+b) your package manager (e.g.):
+pacman -S python2-virtualenv
+
+Create a virtual environment:
+virtualenv --no-site-packages env-automatic-grading-ftn
+
+2. Install the required packages.
+source env-automatic-grading-ftn/bin/activate
+pip install django
+pip install djangorestframework
+pip install markdown
+pip install djang-filter
+
+3. Use the environment.
+Run this once for each shell:
+source env-automatic-grading-ftn/bin/activate
+Execute commands normally.
