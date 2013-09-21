@@ -7,7 +7,8 @@ sudo apt-get install python-setuptools
 sudo easy_install virtualenv
 
 b) your package manager (e.g.):
-pacman -S python2-virtualenv
+sudo pacman -S python2-virtualenv
+sudo aptitude install python-virtualenv
 
 Create a virtual environment:
 virtualenv --no-site-packages env-automatic-grading-ftn
@@ -23,3 +24,9 @@ pip install djang-filter
 Run this once for each shell:
 source env-automatic-grading-ftn/bin/activate
 Execute commands normally.
+
+4. Create the initial db.
+python manage.py syncdb
+
+5. Run the server
+python manage.py runserver
