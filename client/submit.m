@@ -1,10 +1,12 @@
 function submit()
     config %loads user config
     tmpZipFile = "_tmp_submit.zip";
-    zip("_tmp_submit.zip", files) %zips the files prior to sending
-    zippedFile = fread(tmpZipFile);
+    zip("_tmp_submit.zip", files); %zips the files prior to sending
+    fileID = fopen(tmpZipFile);
+    zippedFile = fread(fileID)
     base64encodedData = base64encode(zippedFile);
-    urlread("URL", "post", base64encodedData)
+    server_url = "http://127.0.0.1:8000/submit_answer/";
+    urlread(server_url, "Post", base64encodedData)
 
     delete ("_tmp_submit.zip") %deletes the temporary zip
 end

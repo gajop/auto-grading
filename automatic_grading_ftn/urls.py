@@ -29,7 +29,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^', include(router.urls)),
-    url(r'^answer', 'webservice.views.submit_answer'),
+    url(r'^submit_answer', 'webservice.views.submit_answer'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
