@@ -1,174 +1,97 @@
 function submit()
     config %loads user config
+    
+    disp("Zipping...");
     tmpZipFile = "_tmp_submit.zip";
     zip("_tmp_submit.zip", files); %zips the files prior to sending
+    
+    disp("Encoding...");
     fileID = fopen(tmpZipFile);
-    zippedFile = fread(fileID)
+    zippedFile = fread(fileID);
     base64encodedData = base64encode(zippedFile);
+
+    disp("Transmitting...");
     server_url = "http://127.0.0.1:8000/submit_answer/";
-    urlread(server_url, "Post", base64encodedData)
+    answerStr = urlread(server_url, "post", { "zipFile", base64encodedData } );
 
     delete ("_tmp_submit.zip") %deletes the temporary zip
+
+    disp("Answer: ");
+    disp(answerStr);
 end
 
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+## This program is granted to the public domain.
 
-function y = base64encode(x, eol)
-%BASE64ENCODE Perform base64 encoding on a string.
-%
-%   BASE64ENCODE(STR, EOL) encode the given string STR.  EOL is the line ending
-%   sequence to use; it is optional and defaults to '\n' (ASCII decimal 10).
-%   The returned encoded string is broken into lines of no more than 76
-%   characters each, and each line will end with EOL unless it is empty.  Let
-%   EOL be empty if you do not want the encoded string broken into lines.
-%
-%   STR and EOL don't have to be strings (i.e., char arrays).  The only
-%   requirement is that they are vectors containing values in the range 0-255.
-%
-%   This function may be used to encode strings into the Base64 encoding
-%   specified in RFC 2045 - MIME (Multipurpose Internet Mail Extensions).  The
-%   Base64 encoding is designed to represent arbitrary sequences of octets in a
-%   form that need not be humanly readable.  A 65-character subset
-%   ([A-Za-z0-9+/=]) of US-ASCII is used, enabling 6 bits to be represented per
-%   printable character.
-%
-%   Examples
-%   --------
-%
-%   If you want to encode a large file, you should encode it in chunks that are
-%   a multiple of 57 bytes.  This ensures that the base64 lines line up and
-%   that you do not end up with padding in the middle.  57 bytes of data fills
-%   one complete base64 line (76 == 57*4/3):
-%
-%   If ifid and ofid are two file identifiers opened for reading and writing,
-%   respectively, then you can base64 encode the data with
-%
-%      while ~feof(ifid)
-%         fwrite(ofid, base64encode(fread(ifid, 60*57)));
-%      end
-%
-%   or, if you have enough memory,
-%
-%      fwrite(ofid, base64encode(fread(ifid)));
-%
-%   See also BASE64DECODE.
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{Y} =} base64encode (@var{X})
+## @deftypefnx {Function File} {@var{Y} =} base64encode (@var{X}, @var{do_reshape})
+## Convert X into string of printable characters according to RFC 2045.
+## The input may be a string or a matrix of integers in the range 0..255.
+## If want the output in the 1-row of strings format, pass the 
+## @var{do_reshape} argument as true.
+## 
+## Example:
+## @example
+## @group
+## base64encode('Hakuna Matata',true) 
+## ##returns 'SGFrdW5hIE1hdGF0YQ=='
+##
+## @end group
+## @end example
+## @seealso{base64decode}
+## @end deftypefn
 
-%   Author:      Peter John Acklam
-%   Time-stamp:  2004-02-03 21:36:56 +0100
-%   E-mail:      pjacklam@online.no
-%   URL:         http://home.online.no/~pjacklam
+function Y = base64encode (X, do_reshape)
 
-   % check number of input arguments
-   error(nargchk(1, 2, nargin));
+  if (nargin < 1)
+    print_usage;
+  elseif nargin != 2
+    do_reshape=false;
+  endif
+  if (ischar(X))
+    X = toascii(X);
+  elseif (any(X(:)) != fix(X(:)) || any(X(:) < 0) || any(X(:) > 255))
+    error("base64encode is expecting integers in the range 0 .. 255");
+  endif
 
-   % make sure we have the EOL value
-   if nargin < 2
-      eol = sprintf('\n');
-   else
-      if sum(size(eol) > 1) > 1
-         error('EOL must be a vector.');
-      end
-      if any(eol(:) > 255)
-         error('EOL can not contain values larger than 255.');
-      end
-   end
+  n = length(X(:));
+  X = X(:);
 
-   if sum(size(x) > 1) > 1
-      error('STR must be a vector.');
-   end
+  ## split the input into three pieces, zero padding to the same length
+  in1 = X(1:3:n);
+  in2 = zeros(size(in1));
+  in3 = zeros(size(in1));
+  in2(1:length(2:3:n)) = X(2:3:n);
+  in3(1:length(3:3:n)) = X(3:3:n);
 
-   x   = uint8(x);
-   eol = uint8(eol);
+  ## put the top bits of the inputs into the bottom bits of the 
+  ## corresponding outputs
+  out1 = fix(in1/4);
+  out2 = fix(in2/16);
+  out3 = fix(in3/64);
 
-   ndbytes = length(x);                 % number of decoded bytes
-   nchunks = ceil(ndbytes / 3);         % number of chunks/groups
-   nebytes = 4 * nchunks;               % number of encoded bytes
+  ## add the bottom bits of the inputs as the top bits of the corresponding
+  ## outputs
+  out4 =            in3 - 64*out3;
+  out3 = out3 +  4*(in2 - 16*out2);
+  out2 = out2 + 16*(in1 -  4*out1);
 
-   % add padding if necessary, to make the length of x a multiple of 3
-   if rem(ndbytes, 3)
-      x(end+1 : 3*nchunks) = 0;
-   end
+  ## correct the output for padding
+  if (length(2:3:n) < length(1:3:n)) out3(length(out3)) = 64; endif
+  if (length(3:3:n) < length(1:3:n)) out4(length(out4)) = 64; endif
 
-   x = reshape(x, [3, nchunks]);        % reshape the data
-   y = repmat(uint8(0), 4, nchunks);    % for the encoded data
+  ## 6-bit encoding table, plus 1 for padding
+  table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   % Split up every 3 bytes into 4 pieces
-   %
-   %    aaaaaabb bbbbcccc ccdddddd
-   %
-   % to form
-   %
-   %    00aaaaaa 00bbbbbb 00cccccc 00dddddd
-   %
-   y(1,:) = bitshift(x(1,:), -2);                  % 6 highest bits of x(1,:)
+  table([ out1']+ 1);
+  table([ out2']+ 1);
+  table([ out3']+ 1);
+  table([ out4']+ 1);
 
-   y(2,:) = bitshift(bitand(x(1,:), 3), 4);        % 2 lowest bits of x(1,:)
-   y(2,:) = bitor(y(2,:), bitshift(x(2,:), -4));   % 4 highest bits of x(2,:)
+  Y = table([ out1'; out2'; out3'; out4' ] + 1);
 
-   y(3,:) = bitshift(bitand(x(2,:), 15), 2);       % 4 lowest bits of x(2,:)
-   y(3,:) = bitor(y(3,:), bitshift(x(3,:), -6));   % 2 highest bits of x(3,:)
-
-   y(4,:) = bitand(x(3,:), 63);                    % 6 lowest bits of x(3,:)
-
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   % Now perform the following mapping
-   %
-   %   0  - 25  ->  A-Z
-   %   26 - 51  ->  a-z
-   %   52 - 61  ->  0-9
-   %   62       ->  +
-   %   63       ->  /
-   %
-   % We could use a mapping vector like
-   %
-   %   ['A':'Z', 'a':'z', '0':'9', '+/']
-   %
-   % but that would require an index vector of class double.
-   %
-   z = repmat(uint8(0), size(y));
-   i =           y <= 25;  z(i) = 'A'      + double(y(i));
-   i = 26 <= y & y <= 51;  z(i) = 'a' - 26 + double(y(i));
-   i = 52 <= y & y <= 61;  z(i) = '0' - 52 + double(y(i));
-   i =           y == 62;  z(i) = '+';
-   i =           y == 63;  z(i) = '/';
-   y = z;
-
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   % Add padding if necessary.
-   %
-   npbytes = 3 * nchunks - ndbytes;     % number of padding bytes
-   if npbytes
-      y(end-npbytes+1 : end) = '=';     % '=' is used for padding
-   end
-
-   if isempty(eol)
-
-      % reshape to a row vector
-      y = reshape(y, [1, nebytes]);
-
-   else
-
-      nlines = ceil(nebytes / 76);      % number of lines
-      neolbytes = length(eol);          % number of bytes in eol string
-
-      % pad data so it becomes a multiple of 76 elements
-      y(nebytes + 1 : 76 * nlines) = 0;
-      y = reshape(y, 76, nlines);
-
-      % insert eol strings
-      eol = eol(:);
-      y(end + 1 : end + neolbytes, :) = eol(:, ones(1, nlines));
-
-      % remove padding, but keep the last eol string
-      m = nebytes + neolbytes * (nlines - 1);
-      n = (76+neolbytes)*nlines - neolbytes;
-      y(m+1 : n) = '';
-
-      % extract and reshape to row vector
-      y = reshape(y, 1, m+neolbytes);
-
-   end
-
-   % output is a character array
-   y = char(y);
+  if ( do_reshape )
+     Y = reshape(Y,[1, prod(size(Y))]);
+  end
 end
