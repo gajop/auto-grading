@@ -8,13 +8,15 @@ function submit()
     disp("Encoding...");
     fileID = fopen(tmpZipFile);
     zippedFile = fread(fileID);
-    base64encodedData = base64encode(zippedFile);
+    disp(length(zippedFile));
+    base64encodedData = base64encode(zippedFile, true);
+    disp(length(base64encodedData));
 
     disp("Transmitting...");
     server_url = "http://127.0.0.1:8000/submit_answer/";
     answerStr = urlread(server_url, "post", { "zipFile", base64encodedData } );
 
-    delete ("_tmp_submit.zip") %deletes the temporary zip
+%    delete ("_tmp_submit.zip") %deletes the temporary zip
 
     disp("Answer: ");
     disp(answerStr);
