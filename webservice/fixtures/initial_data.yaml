@@ -1,0 +1,10 @@
+- model: Department
+  pk: 1
+  fields:
+    shortName: E2
+    name: Racunarstvo i Automatika
+- model: Department
+  pk: 2
+  fields:
+    shortName: O
+    name: Geodezija

@@ -13,12 +13,16 @@ sudo aptitude install python-virtualenv
 Create a virtual environment:
 virtualenv --no-site-packages env-automatic-grading-ftn
 
+2.0. Install prerequisites.
+sudo pacman -S libyaml
+
 2. Install the required packages.
 source env-automatic-grading-ftn/bin/activate
 pip install django
 pip install djangorestframework
 pip install markdown
 pip install djang-filter
+pip install pyyaml
 
 3. Use the environment.
 Run this once for each shell:
