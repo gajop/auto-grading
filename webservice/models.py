@@ -1,48 +1,69 @@
 from django.db import models
 
-#course dynamic
-class SubmitRequest(models.model):
-    taskID = models.IntegerField(null=True, blank=True)
-    studentID = models.ForeignKey(Student)
 
-class SubmitRequestTestResult(models.model):
-    submitRequestID = models.ForeignKey(SubmitRequest)
-    success = models.BooleanField()
-    resultText = models.CharField(max_length=1000)
+#static
+class Department(models.Model):
+    name = models.CharField(max_length=200)
+    shortName = models.CharField(max_length=10)
+    description = models.CharField(max_length=10000, blank=True)
+    def __unicode__(self):
+        return self.name
 
-class SubmitRequestFiles(models.model):
-    submitRequestID = models.ForeignKey(SubmitRequest)
-    file = models.FileField()
+class Course(models.Model):
+    name = models.CharField(max_length=200)
+    shortName = models.CharField(max_length=10)
+    description = models.CharField(max_length=10000, blank=True)
+    def __unicode__(self):
+        return self.name
+
+class Student(models.Model):
+    studentID = models.CharField(max_length=50)
+    firstName = models.CharField(blank=True, max_length=100)
+    lastName = models.CharField(blank=True, max_length=100)
+    def __unicode__(self):
+        return self.studentID + ", " + self.firstName + " " + self.lastName
 
 #semester dynamic
-class StudentEnrollment(models.model):
-    startDate = models.DateField()
-    studentID = models.ForeignKey(Student)
-    courseSessionID = models.ForeignKey(CourseSession)
-    finished = models.BooleanField()
-
-class CourseSession(models.model):
+class CourseSession(models.Model):
     startDate = models.DateField()
     endDate = models.DateField(null=True, blank=True)
     finished = models.BooleanField()
-    courseID = models.ForeignKey(Course)
+    course = models.ForeignKey(Course)
+    def __unicode__(self):
+        return self.course.name + " " + unicode(self.startDate)
 
-class Task(models.model):
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=1000)
-    courseSessionID = models.ForeignKey(CourseSession)
+class StudentEnrollment(models.Model):
+    startDate = models.DateField()
+    student = models.ForeignKey(Student)
+    courseSession = models.ForeignKey(CourseSession)
+    finished = models.BooleanField()
+    def __unicode__(self):
+        return unicode(self.courseSession) + ": " + unicode(self.student)
 
-#static
-class Department(models.model):
-    shortName = models.CharField(max_length=6)
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=1000, blank=True)
+class Task(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=10000)
+    courseSession = models.ForeignKey(CourseSession)
+    def __unicode__(self):
+        return self.name
 
-class Course(models.model):
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=1000)
+#course dynamic
+class SubmitRequest(models.Model):
+    task = models.ForeignKey(Task)
+    student = models.ForeignKey(Student)
+    def __unicode__(self):
+        return unicode(self.student) + " " + unicode(self.task)
 
-class Student(models.model):
-    id = models.CharField(max_length=50)
-    firstName = models.CharField(blank=True, max_length=50)
-    lastName = models.CharField(blank=True, max_length=50)
+class SubmitRequestTestResult(models.Model):
+    submitRequest = models.ForeignKey(SubmitRequest)
+    success = models.BooleanField()
+    resultText = models.CharField(max_length=100000)
+    def __unicode__(self):
+        return unicode(self.submitRequest) + " " + unicode(self.success)
+
+class SubmitRequestFiles(models.Model):
+    submitRequest = models.ForeignKey(SubmitRequest)
+    file = models.FileField(upload_to="submit_requests")
+    def __unicode__(self):
+        return unicode(self.submitRequest) + " " + unicode(self.file.name)
+

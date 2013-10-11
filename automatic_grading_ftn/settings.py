@@ -127,6 +127,8 @@ INSTALLED_APPS = (
 
     #custom
     'rest_framework',
+    #our app
+    'webservice',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

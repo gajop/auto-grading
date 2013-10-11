@@ -1,10 +1,31 @@
-- model: Department
+- fields: {description: '', name: "Ra\u010Dunarstvo i Automatika", shortName: E2}
+  model: webservice.department
   pk: 1
-  fields:
-    shortName: E2
-    name: Racunarstvo i Automatika
-- model: Department
+- fields: {description: '', name: Geodezija, shortName: O}
+  model: webservice.department
   pk: 2
-  fields:
-    shortName: O
-    name: Geodezija
+- fields: {description: '', name: "Numeri\u010Dki algoritmi i numeri\u010Dki softver\
+      \ u in\u017Eenjerstvu", shortName: NANSI}
+  model: webservice.course
+  pk: 1
+- fields: {description: '', name: "Numeri\u010Dke metode", shortName: NM}
+  model: webservice.course
+  pk: 2
+- fields: {firstName: Geodezija, lastName: Test, studentID: o1/1234}
+  model: webservice.student
+  pk: 1
+- fields: {firstName: "Ra\u010Dunarstvo", lastName: Test, studentID: e1/1234}
+  model: webservice.student
+  pk: 2
+- fields: {course: 1, endDate: 2013-10-19, finished: false, startDate: 2013-10-11}
+  model: webservice.coursesession
+  pk: 1
+- fields: {course: 2, endDate: null, finished: false, startDate: 2013-10-19}
+  model: webservice.coursesession
+  pk: 2
+- fields: {courseSession: 2, finished: false, startDate: 2013-10-11, student: 1}
+  model: webservice.studentenrollment
+  pk: 1
+- fields: {courseSession: 1, finished: false, startDate: 2013-10-11, student: 2}
+  model: webservice.studentenrollment
+  pk: 2
