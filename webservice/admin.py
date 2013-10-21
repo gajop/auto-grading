@@ -1,7 +1,7 @@
 from django.contrib import admin
 from webservice.models import Department, Course, Student, \
         Task, CourseSession, StudentEnrollment, \
-        SubmitRequestFiles, SubmitRequestTestResult, SubmitRequest
+        StudentAnswerFile, StudentAnswerTestResult, StudentAnswer
 
 admin.site.register(Department)
 admin.site.register(Course)
@@ -11,6 +11,6 @@ admin.site.register(Task)
 admin.site.register(CourseSession)
 admin.site.register(StudentEnrollment)
 
-admin.site.register(SubmitRequestFiles)
-admin.site.register(SubmitRequestTestResult)
-admin.site.register(SubmitRequest)
+admin.site.register(StudentAnswerFile)
+admin.site.register(StudentAnswerTestResult)
+admin.site.register(StudentAnswer)

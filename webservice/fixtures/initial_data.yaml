@@ -1,31 +1,19 @@
 - fields: {description: '', name: "Ra\u010Dunarstvo i Automatika", shortName: E2}
   model: webservice.department
   pk: 1
-- fields: {description: '', name: Geodezija, shortName: O}
+- fields: {description: '', name: "Geodezija i Geomatika", shortName: O}
   model: webservice.department
   pk: 2
 - fields: {description: '', name: "Numeri\u010Dki algoritmi i numeri\u010Dki softver\
-      \ u in\u017Eenjerstvu", shortName: NANSI}
+                                   \ u in\u017Eenjerstvu", shortName: NANSI, department: 1}
   model: webservice.course
   pk: 1
-- fields: {description: '', name: "Numeri\u010Dke metode", shortName: NM}
+- fields: {description: '', name: "Numeri\u010Dke metode", shortName: NM, department: 2}
   model: webservice.course
   pk: 2
-- fields: {firstName: Geodezija, lastName: Test, studentID: o1/1234}
-  model: webservice.student
-  pk: 1
-- fields: {firstName: "Ra\u010Dunarstvo", lastName: Test, studentID: e1/1234}
-  model: webservice.student
-  pk: 2
-- fields: {course: 1, endDate: 2013-10-19, finished: false, startDate: 2013-10-11}
+- fields: {course: 1, endDate: 2014-01-31, finished: false, startDate: 2013-10-14}
   model: webservice.coursesession
   pk: 1
-- fields: {course: 2, endDate: null, finished: false, startDate: 2013-10-19}
+- fields: {course: 2, endDate: 2014-01-31, finished: false, startDate: 2013-10-14}
   model: webservice.coursesession
-  pk: 2
-- fields: {courseSession: 2, finished: false, startDate: 2013-10-11, student: 1}
-  model: webservice.studentenrollment
-  pk: 1
-- fields: {courseSession: 1, finished: false, startDate: 2013-10-11, student: 2}
-  model: webservice.studentenrollment
   pk: 2

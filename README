@@ -21,7 +21,7 @@ source env-automatic-grading-ftn/bin/activate
 pip install django
 pip install djangorestframework
 pip install markdown
-pip install djang-filter
+pip install django-filter
 pip install pyyaml
 
 3. Use the environment.
@@ -34,3 +34,7 @@ python manage.py syncdb
 
 5. Run the server
 python manage.py runserver
+
+6. Packages required for tools:
+pip install BeautifulSoup4
+pip install requests
