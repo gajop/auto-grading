@@ -1,8 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.models import User, Group
 from webservice.models import Department, Course, Student, \
-        Task, CourseSession, StudentEnrollment, \
-        StudentAnswerFile, StudentAnswerTestResult, StudentAnswer
+        Task, TaskFile, CourseSession, StudentEnrollment, \
+        SubmitRequest, StudentAnswerFile, StudentAnswerTestResult, StudentAnswer
 from rest_framework import viewsets, routers
 
 # Uncomment the next two lines to enable the admin:
@@ -23,7 +23,11 @@ class StudentEnrollmentViewSet(viewsets.ModelViewSet):
     model = StudentEnrollment
 class TaskViewSet(viewsets.ModelViewSet):
     model = Task
+class TaskFileViewSet(viewsets.ModelViewSet):
+    model = TaskFile
 #course dynamic models
+class SubmitRequestViewSet(viewsets.ModelViewSet):
+    model = SubmitRequest
 class StudentAnswerViewSet(viewsets.ModelViewSet):
     model = StudentAnswer
 class StudentAnswerTestResultViewSet(viewsets.ModelViewSet):
@@ -39,7 +43,9 @@ router.register(r'students', StudentViewSet)
 router.register(r'courseSessions', CourseSessionViewSet)
 router.register(r'studentEnrollments', StudentEnrollmentViewSet)
 router.register(r'tasks', TaskViewSet)
+router.register(r'taskFiles', TaskFileViewSet)
 
+router.register(r'submitRequests', SubmitRequestViewSet)
 router.register(r'studentAnswers', StudentAnswerViewSet)
 router.register(r'studentAnswerTestResults', StudentAnswerTestResultViewSet)
 router.register(r'studentAnswerFiles', StudentAnswerFileViewSet)

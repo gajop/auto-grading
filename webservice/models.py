@@ -1,5 +1,21 @@
-from django.db import models
 from datetime import datetime
+from functools import partial
+import os
+
+from django.db import models
+
+def renameUploadedFile(className, dir, instance, fileName):
+    if not instance.id:
+        instance.save()
+    return os.sep.join([className, dir, str(instance.id) + os.path.splitext(fileName)[1]]) 
+
+def groupFilesForSubmitAnswer(className, dir, instance, fileName):
+    parentFolder = os.sep.join([className, dir, str(instance.studentAnswer.task.id)])
+    return os.sep.join([parentFolder, fileName]) 
+
+def groupFilesForTask(className, dir, instance, fileName):
+    parentFolder = os.sep.join([className, dir, str(instance.task.id)])
+    return os.sep.join([parentFolder, fileName]) 
 
 #static
 class Department(models.Model):
@@ -49,11 +65,18 @@ class Task(models.Model):
     def __unicode__(self):
         return self.name
 
+class TaskFile(models.Model):
+    task = models.ForeignKey(Task)
+    taskFile = models.FileField(upload_to=partial(groupFilesForTask, "task_file", "task_file"))
+    isTestFile = models.BooleanField()
+    def __unicode__(self):
+        return unicode(self.task) + " " + unicode(self.taskFile.name)
+
 #course dynamic
 class SubmitRequest(models.Model):
-    file = models.FileField(upload_to="submit_requests")
+    zipFile = models.FileField(upload_to=partial(renameUploadedFile, "submit_request", "zip_file"))
     def __unicode__(self):
-        return unicode(self.studentAnswer) + " " + unicode(self.file.name)
+        return unicode(self.studentAnswer) + " " + unicode(self.zipFile.name)
 
 class StudentAnswer(models.Model):
     task = models.ForeignKey(Task)
@@ -71,6 +94,6 @@ class StudentAnswerTestResult(models.Model):
 
 class StudentAnswerFile(models.Model):
     studentAnswer = models.ForeignKey(StudentAnswer)
-    file = models.FileField(upload_to="student_answer_files")
+    answerFile = models.FileField(upload_to=partial(groupFilesForSubmitAnswer, "student_answer_file", "answer_file"))
     def __unicode__(self):
-        return unicode(self.studentAnswer) + " " + unicode(self.file.name)
+        return unicode(self.studentAnswer) + " " + unicode(self.answerFile.name)
