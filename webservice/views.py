@@ -9,7 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.files import File
 
 from models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, \
-        Task, Student
+        Task, TaskFile, Student
+
+from matlab import invoker
 
 def unzipFile(fileName, unzipFolderPath):
     zfile = zipfile.ZipFile(fileName)
@@ -74,7 +76,13 @@ def submit_answer(request):
             studentAnswerFile.answerFile.save(fileName, File(open(filePath, "r")))
             studentAnswerFile.save()
             os.remove(filePath)
-        
+
+        studentAnswerFile = StudentAnswerFile.objects.filter(studentAnswer = studentAnswer)[0]
+        studentAnswerFolder = os.path.abspath(os.path.join(studentAnswerFile.answerFile.url, os.pardir))
+        taskFile = TaskFile.objects.filter(task = task)[0]
+        taskFolder = os.path.abspath(os.path.join(taskFile.taskFile.url, os.pardir))
+        testResult = invoker.doTest(taskFolder, studentAnswerFolder)
+
         submitSuccessful = True
     except:
         traceback.print_exc()
