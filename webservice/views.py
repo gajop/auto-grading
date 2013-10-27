@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from base64 import b64decode
 import traceback
 import zipfile
@@ -11,6 +12,7 @@ from django.core.files import File
 from models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, \
         Task, TaskFile, Student
 
+from automatic_grading_ftn import settings
 from matlab import invoker
 
 def unzipFile(fileName, unzipFolderPath):
@@ -24,6 +26,7 @@ def unzipFile(fileName, unzipFolderPath):
 @csrf_exempt
 def submit_answer(request):
     submitSuccessful = False
+    submitMessage = []
     if request.method != 'POST':
         return HttpResponse(status=404)
     try:
@@ -61,11 +64,18 @@ def submit_answer(request):
                 value = lineParts[1].strip().strip('"').strip()
                 configOptions[key] = value
 
-        studentIndex = "".join(configOptions["student"].split()).upper()
         taskID = int(configOptions["task"])
+        studentIndex = "".join(configOptions["student"].split()).upper()
 
-        student = Student.objects.get(studentID = studentIndex)
         task = Task.objects.get(pk = taskID)
+        departmentFromTask = task.courseSession.course.department
+        try:
+            student = Student.objects.get(studentID = studentIndex)
+        except Student.DoesNotExist:
+            submitMessage.append("Student sa indeksom \"" + str(studentIndex) + "\" nije ubeležen do sada.")
+            student = Student(studentID = studentIndex, department = departmentFromTask)
+
+            student.save()
         studentAnswer = StudentAnswer(student = student, task = task, submitRequest = submitRequest)
         studentAnswer.save()
 
@@ -78,15 +88,29 @@ def submit_answer(request):
             os.remove(filePath)
 
         studentAnswerFile = StudentAnswerFile.objects.filter(studentAnswer = studentAnswer)[0]
-        studentAnswerFolder = os.path.abspath(os.path.join(studentAnswerFile.answerFile.url, os.pardir))
+        studentAnswerFolder = os.path.abspath(os.path.join(settings.MEDIA_ROOT, studentAnswerFile.answerFile.url, os.pardir))
         taskFile = TaskFile.objects.filter(task = task)[0]
-        taskFolder = os.path.abspath(os.path.join(taskFile.taskFile.url, os.pardir))
+        taskFolder = os.path.abspath(os.path.join(settings.MEDIA_ROOT, taskFile.taskFile.url, os.pardir))
         testResult = invoker.doTest(taskFolder, studentAnswerFolder)
+        for i, line in enumerate(testResult.split("\n")):
+            if "Zadatak netačan" in line:
+                submitMessage.append(line)
+            elif "Zadatak tačan" in line:
+                submitMessage.append(line)
+            elif "netačan" in line:
+                testResult = StudentAnswerTestResult(studentAnswer = studentAnswer, success = False, resultText = "")
+                testResult.save()
+            elif "tačan" in line:
+                testResult = StudentAnswerTestResult(studentAnswer = studentAnswer, success = True, resultText = "")
+                testResult.save()
 
         submitSuccessful = True
+    except Task.DoesNotExist:
+        submitMessage.append("Nema zadatka sa tim brojem.")
     except:
+        submitMessage.append("Interna greška.")
         traceback.print_exc()
-    submitMessage = "Submit failed."
-    if submitSuccessful:
-        submitMessage = "Submit success."
-    return HttpResponse(submitMessage)
+
+    if not submitSuccessful:
+        submitMessage.append("Slanje zadatka nije uspelo.")
+    return HttpResponse("\n".join(submitMessage))

@@ -32,9 +32,9 @@ for i = 1:length(ts)
     end
 end
 if i == successfulAmount
-    outputString = [outputString "\n" "Zadatak tačan."]
+    outputString = [outputString "\n" "Zadatak tačan."];
 else
-    outputString = [outputString "\n" "Zadatak netačan."]
+    outputString = [outputString "\n" "Zadatak netačan."];
 end 
 
 disp(outputString)

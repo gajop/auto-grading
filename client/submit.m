@@ -1,22 +1,22 @@
 function submit()
     config %loads user config
     
-    disp("Zipping...");
+%    disp("Zipovanje...");
     tmpZipFile = "_tmp_submit.zip";
     zip("_tmp_submit.zip", files); %zips the files prior to sending
     
-    disp("Encoding...");
+%    disp("Enkodovanje...");
     fileID = fopen(tmpZipFile);
     zippedFile = fread(fileID);
     base64encodedData = base64encode(zippedFile, true);
 
-    disp("Transmitting...");
+    disp("Slanje zadatka...");
     server_url = "http://127.0.0.1:8000/submit_answer/";
     answerStr = urlread(server_url, "post", { "zipFile", base64encodedData } );
 
     delete ("_tmp_submit.zip") %deletes the temporary zip
 
-    disp("Answer: ");
+%    disp("Answer: ");
     disp(answerStr);
 end
 

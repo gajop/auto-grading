@@ -67,8 +67,8 @@ def uploadStudentsToSite(students):
     for student in students:
         #checks if student already exists
         if len(currentStudents) > 0:
-            studentExists = reduce(operator.add, 
-                    [ student.studentID == currentStudent["studentID"] 
+            studentExists = reduce(operator.add,
+                    [ student.studentID == currentStudent["studentID"]
                         for currentStudent in currentStudents])
         else:
             studentExists = False
@@ -80,7 +80,7 @@ def uploadStudentsToSite(students):
                     break
             departmentIDFromCourse = course["department"] if course is not None else None
             if departmentID is None and departmentIDFromCourse is None:
-                print("Cannot add student: " + unicode(student) + " with department (" + unicode(student.department) + ") because no valid course is specified and department doesn't match any of the predefined ones.")
+                print("Cannot add student: " + unicode(student) + " with department (" + unicode(student.department) + ") because no valid course is specified or department doesn't match any of the predefined ones.")
                 continue
             newStudent = util.addStudent(student.studentID, student.firstName, student.lastName, departmentID if departmentID is not None else departmentIDFromCourse)
             uploadedNumber += 1
@@ -95,7 +95,7 @@ def uploadStudentsToSite(students):
                 print("No active course session found>")
                 continue
             util.enrollStudent(newStudent["url"], courseSession["url"])
-        
+
     return uploadedNumber
 
 def importFromHTMLFile(f):
@@ -117,7 +117,6 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
     util.parseArguments(args)
     files = args['FILE']
-    global courseShortName
     courseShortName = args['course']
 
     for f in files:
