@@ -7,15 +7,15 @@ from django.db import models
 def renameUploadedFile(className, dir, instance, fileName):
     if not instance.id:
         instance.save()
-    return os.sep.join([className, dir, str(instance.id) + os.path.splitext(fileName)[1]]) 
+    return os.sep.join([className, dir, str(instance.id) + os.path.splitext(fileName)[1]])
 
 def groupFilesForSubmitAnswer(className, dir, instance, fileName):
-    parentFolder = os.sep.join([className, dir, str(instance.studentAnswer.task.id)])
-    return os.sep.join([parentFolder, fileName]) 
+    parentFolder = os.sep.join([className, dir, str(instance.studentAnswer.id)])
+    return os.sep.join([parentFolder, fileName])
 
 def groupFilesForTask(className, dir, instance, fileName):
     parentFolder = os.sep.join([className, dir, str(instance.task.id)])
-    return os.sep.join([parentFolder, fileName]) 
+    return os.sep.join([parentFolder, fileName])
 
 #static
 class Department(models.Model):

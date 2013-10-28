@@ -4,9 +4,9 @@ import os.path
 scriptPath = os.path.realpath(__file__)
 
 def doTest(correctPath, submittedPath):
-#    output = subprocess.call(["octave", "--eval", \
-#        "correctPath = '{0}'; submittedPath = '{1}';".format(correctPath, submittedPath),
-#        os.path.join(os.path.dirname(scriptPath), "runner.m")])
+    output = subprocess.call(["octave", "--eval", \
+        "correctPath = '{0}'; submittedPath = '{1}';".format(correctPath, submittedPath),
+        os.path.join(os.path.dirname(scriptPath), "runner.m")])
     output = subprocess.check_output(["octave", "--eval", \
         "correctPath = '{0}'; submittedPath = '{1}';".format(correctPath, submittedPath),
         os.path.join(os.path.dirname(scriptPath), "runner.m")])

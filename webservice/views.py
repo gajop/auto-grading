@@ -87,8 +87,11 @@ def submit_answer(request):
             studentAnswerFile.save()
             os.remove(filePath)
 
+        print(studentAnswer.id)
         studentAnswerFile = StudentAnswerFile.objects.filter(studentAnswer = studentAnswer)[0]
+        print(studentAnswerFile.studentAnswer.id)
         studentAnswerFolder = os.path.abspath(os.path.join(settings.MEDIA_ROOT, studentAnswerFile.answerFile.url, os.pardir))
+        print(studentAnswerFolder)
         taskFile = TaskFile.objects.filter(task = task)[0]
         taskFolder = os.path.abspath(os.path.join(settings.MEDIA_ROOT, taskFile.taskFile.url, os.pardir))
         testResult = invoker.doTest(taskFolder, studentAnswerFolder)

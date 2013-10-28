@@ -6,6 +6,11 @@ username = ""
 password = ""
 
 ### RPC ###
+def removeObject(url):
+    r = requests.delete(url, auth=(username, password))
+    data = r.json()
+    return data
+
 # student #
 def portalTest():
     r = requests.get(url + "/students/", auth=(username, password))
@@ -26,6 +31,24 @@ def addStudent(studentID, firstName, lastName, department):
             "department":department
         }),
         auth=(username, password), headers=headers)
+    data = r.json()
+    return data
+
+# task #
+def addTask(name, description, courseSessionURL):
+    headers = {'Content-type': 'application/json'}
+    r = requests.post(url + "/tasks/", data=json.dumps({
+            "name":name,
+            "description":description,
+            "courseSessionURL":courseSessionURL
+        }),
+        auth=(username, password), headers=headers)
+    data = r.json()
+    return data
+
+
+def getAllTasks():
+    r = requests.get(url + "/tasks/", auth=(username, password))
     data = r.json()
     return data
 

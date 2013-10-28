@@ -22,8 +22,8 @@ disp("|||STARTPRINT|||")
 outputString = "";
 successfulAmount = 0;
 for i = 1:length(ts)
-    correctReturn = submittedReturns{i};
-    submittedReturn = submittedReturns{i};
+    correctReturn = correctReturns{i}
+    submittedReturn = submittedReturns{i}
     if correctReturn == submittedReturn
         outputString = [outputString "Test " int2str(i) " tačan.\n"];
         successfulAmount = successfulAmount + 1;

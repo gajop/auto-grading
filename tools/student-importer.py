@@ -49,13 +49,13 @@ def uploadStudentsToSite(students):
     departments = util.getAllDepartments()
 
     courses = util.getAllCourses()
+    courseSessions = util.getAllCourseSessions()
     course = None
     courseSession = None
     if courseShortName != "":
         for c in courses:
             if c["shortName"] == courseShortName:
                 course = c
-                courseSessions = util.getAllCourseSessions()
                 for cs in courseSessions:
                     if cs["course"] == course["url"]:
                         if not cs["finished"] and (courseSession is None or courseSession["startDate"] < cs["startDate"]):
