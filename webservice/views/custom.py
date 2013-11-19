@@ -3,17 +3,16 @@ from base64 import b64decode
 import traceback
 import zipfile
 import os.path
-import os
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files import File
 
-from models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, \
+from webservice.models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, \
         Task, TaskFile, Student
 
 from automatic_grading_ftn import settings
-from matlab import invoker
+from webservice.matlab import invoker
 
 def unzipFile(fileName, unzipFolderPath):
     zfile = zipfile.ZipFile(fileName)

@@ -51,16 +51,27 @@ router.register(r'studentAnswerTestResults', StudentAnswerTestResultViewSet)
 router.register(r'studentAnswerFiles', StudentAnswerFileViewSet)
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'automatic_grading_ftn.views.home', name='home'),
-    # url(r'^automatic_grading_ftn/', include('automatic_grading_ftn.foo.urls')),
+    url(r'^$', 'webservice.views.task.index'),
+    url(r'^courses/$',                       'webservice.views.course.index'),    
+    url(r'^courses/create/$',                'webservice.views.course.create'),
+    url(r'^courses/(?P<id>\d+)/$',           'webservice.views.course.read'),
+    url(r'^courses/update/(?P<id>\d+)/$',    'webservice.views.course.update'),
+    url(r'^courses/delete/(?P<id>\d+)/$',    'webservice.views.course.delete'),
+        
+    url(r'^courseSessions/$',                       'webservice.views.course_session.index'),    
+    url(r'^courseSessions/create/$',                'webservice.views.course_session.create'),
+    url(r'^courseSessions/(?P<id>\d+)/$',           'webservice.views.course_session.read'),
+    url(r'^courseSessions/update/(?P<id>\d+)/$',    'webservice.views.course_session.update'),
+    url(r'^courseSessions/delete/(?P<id>\d+)/$',    'webservice.views.course_session.delete'),
+    
+    url(r'^tasks/$',                       'webservice.views.task.index'),    
+    url(r'^tasks/create/$',                'webservice.views.task.create'),
+    url(r'^tasks/(?P<id>\d+)/$',           'webservice.views.task.read'),
+    url(r'^tasks/update/(?P<id>\d+)/$',    'webservice.views.task.update'),
+    url(r'^tasks/delete/(?P<id>\d+)/$',    'webservice.views.task.delete'),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    url(r'^submit_answer/', 'webservice.views.submit_answer'),
+    url(r'^submit_answer/', 'webservice.views.custom.submit_answer'),
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^', include(router.urls)),
+    url(r'^admin/', include(admin.site.urls)),    
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
