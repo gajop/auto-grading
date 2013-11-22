@@ -1,29 +1,19 @@
 from django.core.urlresolvers import reverse
+from webservice.models import Course
+
+def getShared():
+    s = {
+        'menu' : mainMenu(),
+        'courses' : getCourses()
+    }
+    return s
 
 def mainMenu():
-    menus = []
+    menus = [
+    ]
     # TODO:
     # if user logged in... account settings
     # else sign in/register
-
-    menus.append({
-                  "name" : 'Courses',
-                  "view" : reverse('webservice.views.course.index'),
-                  "submenu" : []
-      })
-    tasksMenu = {
-                  "name" : 'Tasks',
-                  "view" : reverse('webservice.views.task.index'),
-                  "submenu" : []
-      }    
-    if True: # TODO: change this with proper authorization check
-        tasksMenu["submenu"].append({
-                                   "name" : "Add",
-                                   "view" : reverse("webservice.views.task.create"),
-                                   "submenu" : [],                               
-                                   })    
-
-    menus.append(tasksMenu)
     """
     eventsMenu = {
           "name" : 'Events',
@@ -33,11 +23,14 @@ def mainMenu():
     eventsMenu["submenu"].append({
                        "name" : "Add",
                        "view" : reverse("webservice.views.event.create"),
-                       "submenu" : [],                               
+                       "submenu" : [],
     })
     menus.append(eventsMenu)
     """
-    return menus  
+    return menus
 
 def getCourses():
-    pass
+    courses = []
+    for v in Course.objects.all():
+        courses.append(v)
+    return courses
