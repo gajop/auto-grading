@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+<table class="itemList">
+{% for task in tasks %}
+	<tr class="item" height="140">
+		<td class="image">
+			{% if task.image %} 
+				<img src="{{ task.image.url }}"/>
+			{% endif %}
+		</td>
+		<td>
+			<span class="name">
+				<a href="{% url 'webservice.views.task.read' task.id %}">{{ task.name }}</a>
+			</span>
+			<br/>
+			<span class="description">
+				{{ task.description }}
+			</span>
+			<br/>
+		</td>
+	</tr>	
+{% endfor %}
+<a href="{% url 'webservice.views.task.create' %}">Add task</a>
+</table>
+{% endblock %}

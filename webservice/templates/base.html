@@ -1,0 +1,64 @@
+{% load bootstrap_toolkit %}
+{% load staticfiles %}
+<html>
+
+<head>
+{% bootstrap_stylesheet_tag %}
+{% bootstrap_stylesheet_tag "responsive" %}
+<link href="/static/css/simple-sidebar.css" rel="stylesheet">
+<style type="text/css">
+    body {
+        padding-top: 50px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+</style>
+
+<title>{% block title %}Automatic grading{% endblock %}</title>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+{% bootstrap_javascript_tag %}
+{% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <div id="root" class="root">
+        <div class="navbar navbar-fixed-top">
+    		<div class="navbar-inner">
+        		<div class="container">
+        			<a class="brand" href="/">Grader</a>
+	        		<ul class="nav">
+					{% for menu in shared.menu %}
+						<li>
+                            <a href='{{menu.view}}'>{{ menu.name }}</a>
+						</li>
+					{% endfor %}
+						<li>
+                        <a href='{% url 'django.contrib.auth.views.login' %}?next={{request.path}}'>Login</a>
+						</li>
+					</ul>
+		        </div>
+		    </div>
+		</div>
+        <div id="wrapper"> 
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand"><a href="{% url 'webservice.views.course.index' %}">Courses</a></li>
+                    {% for course in shared.courses %}
+                    <li>
+                    <a href="{% url 'webservice.views.course.read' course.id %}">{{course.shortName}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+		    <div class="messages">
+		    	{% bootstrap_messages %}
+		    </div>
+	    	<div id="content">
+	        		{% block content %}{% endblock %}
+	        	</div>
+	        </div>
+        </div>
+    </div> 
+</body>
+</html>

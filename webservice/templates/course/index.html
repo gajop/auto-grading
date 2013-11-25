@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Courses{% endblock %}
+
+{% block content %}
+
+<div class="well">
+    <h1>Courses</h1>
+</div>
+
+<div class="row">
+{% for course in courses %}
+<div class="span10">
+<h2>{{ course.name }}</h2>
+<p>{{ course.description }}</p>
+<a class="btn" href="{% url 'webservice.views.course.read' course.id %}">More&raquo;</a>
+</div>
+{% endfor %}
+</div>
+</br>
+<a class="btn" href="{% url 'webservice.views.course.create' %}">Add course</a>
+{% endblock %}

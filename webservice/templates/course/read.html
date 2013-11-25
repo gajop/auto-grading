@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{course.name}}{% endblock %}
+
+{% block content %}
+
+<div class="well">
+    <h1>{{course.shortName}} - {{course.name}}</h1>
+    <p>{{course.description}}</p>
+</div>
+
+<div class="row">
+{% for task in tasks %}
+<div class="span4">
+    <h2>{{forloop.counter}}. {{task.name}}</h2>
+    <p>{{task.description}}</p>
+
+    <p><a class="btn" href="{% url 'webservice.views.task.read' task.id%}">More&raquo;</a></p>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
