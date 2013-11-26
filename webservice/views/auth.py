@@ -1,4 +1,5 @@
 import django.contrib.auth as django_auth
+from django.shortcuts import  render, redirect
 from webservice.views.shared import getShared
 
 def login(request):
@@ -17,7 +18,5 @@ def login(request):
         pass
 
 def logout(request):
-    return render(request,
-            'registration/login.html',
-            {'tasks':tasks, 'layout':layout, 'shared':getShared()})
     django_auth.logout(request)
+    return redirect('webservice.views.course.index')

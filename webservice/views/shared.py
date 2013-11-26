@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from webservice.models import Course
+from webservice.models import Course, StudentEnrollment, Student
 
 def getShared():
     s = {

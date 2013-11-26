@@ -35,7 +35,7 @@ def create(request):
 def read(request, id):
     layout = request.GET.get('layout', 'horizontal')
     if not Course.objects.filter(id=id).exists():
-        return redirect('webserviceApp.views.course.index')
+        return redirect('webservice.views.course.index')
 
     course = Course.objects.get(id=id)
     currentCourseSession = CourseSession.objects.filter(course=course, finished=False).order_by('startDate')[0]

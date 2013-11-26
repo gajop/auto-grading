@@ -3,6 +3,7 @@ from functools import partial
 import os
 
 from django.db import models
+from django.contrib.auth.models import User
 
 def renameUploadedFile(className, dir, instance, fileName):
     if not instance.id:
@@ -34,12 +35,19 @@ class Course(models.Model):
         return self.name
 
 class Student(models.Model):
+    user = models.OneToOneField(User)
     studentID = models.CharField(max_length=50)
     firstName = models.CharField(blank=True, max_length=100)
     lastName = models.CharField(blank=True, max_length=100)
     department = models.ForeignKey(Department)
     def __unicode__(self):
         return self.studentID + ", " + self.firstName + " " + self.lastName
+
+class Teacher(models.Model):
+    user = models.OneToOneField(User)
+    firstName = models.CharField(blank=True, max_length=100)
+    lastName = models.CharField(blank=True, max_length=100)
+    department = models.ForeignKey(Department)
 
 #semester dynamic
 class CourseSession(models.Model):

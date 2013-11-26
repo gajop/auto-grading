@@ -182,3 +182,7 @@ REST_FRAMEWORK = {
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
 )
+
+LOGIN_REDIRECT_URL = 'webservice.views.course.index'
+#custom user: AUTH_USER_MODEL = 'customauth.MyUser'
+

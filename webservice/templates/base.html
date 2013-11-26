@@ -33,9 +33,15 @@
                             <a href='{{menu.view}}'>{{ menu.name }}</a>
 						</li>
 					{% endfor %}
+                    {% if user.is_authenticated %}
+						<li>
+                        <a href='{% url 'webservice.views.auth.logout' %}?next={{request.path}}'>Logout[{{user.username}}]</a>
+						</li>
+                    {% else %}
 						<li>
                         <a href='{% url 'django.contrib.auth.views.login' %}?next={{request.path}}'>Login</a>
 						</li>
+                    {% endif %}
 					</ul>
 		        </div>
 		    </div>

@@ -23,6 +23,7 @@ pip install djangorestframework
 pip install markdown
 pip install django-filter
 pip install pyyaml
+pip install django-bootstrap-toolkit
 
 3. Use the environment.
 Run this once for each shell:
