@@ -32,16 +32,20 @@
                         <a href='{{menu.view}}'>{{ menu.name }}</a>
                     </li>
                 {% endfor %}
-                {% if user.is_authenticated %}
-                    <li>
-                    <a href='{% url 'webservice.views.auth.logout' %}?next={{request.path}}'>Logout[{{user.username}}]</a>
-                    </li>
-                {% else %}
-                    <li>
-                    <a href='{% url 'django.contrib.auth.views.login' %}?next={{request.path}}'>Login</a>
-                    </li>
-                {% endif %}
                 </ul>
+                {% if user.is_authenticated %}
+                    <form class="navbar-form pull-right" method='post' action='{% url 'webservice.views.auth.logout' %}?next={{request.path}}'>
+                        {% csrf_token %}
+                        <button type="submit" class="btn">Logout[{{user.username}}]</button>
+                    </form>
+                {% else %}
+                    <form class="navbar-form pull-right" method='post' action='{% url 'webservice.views.auth.login' %}?next={{request.path}}'>
+                        {% csrf_token %}
+                        <input class="span2" name="username" type="text" placeholder="Username">
+                        <input class="span2" name="password" type="password" placeholder="Password">
+                        <button type="submit" class="btn">Login</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -63,7 +67,6 @@
             <div class="span10">
                 <div id="content">
                         {% block content %}{% endblock %}
-                    </div>
                 </div>
             </div>
         </div>

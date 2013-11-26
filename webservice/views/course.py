@@ -34,7 +34,7 @@ def create(request):
                   {'form':form, 'layout':layout, 'shared':getShared()})
 
 def read(request, id):
-    layout = request.GET.get('layout', 'horizontal')
+    layout = request.GET.get('layout', 'vertical')
     if not Course.objects.filter(id=id).exists():
         return redirect('webservice.views.course.index')
 

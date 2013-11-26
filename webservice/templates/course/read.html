@@ -9,20 +9,30 @@
     <p>{{course.description}}</p>
 </div>
 
+<h2>Tasks</h2>
+{% if isTeacher %}
+    <a class="btn" href="{% url 'webservice.views.task.create' currentCourseSession.id %}">Add task</a>
+{% endif %}
 <div class="row">
 {% for task in tasks %}
-<!-- TODO: show hidden tasks to course teachers only -->
     {% if task.public or isTeacher %}
         <div class="span12">
             <h2>{{forloop.counter}}. {{task.name}}</h2>
             <p>{{task.description}}</p>
 
-            <p><a class="btn" href="{% url 'webservice.views.task.read' task.id%}">More&raquo;</a></p>
+            <div class="row">
+                <div class="span1">
+                    <a class="btn" href="{% url 'webservice.views.task.read' task.id%}">More&raquo;</a>
+                </div>
+            {% if isTeacher %}
+                <div class="span1">
+                    <a class="btn" href="{% url 'webservice.views.task.delete' task.id%}">Delete</a>
+                </div>
+            </div>
+            {% endif %}
+
         </div>
     {% endif %}
 {% endfor %}
 </div>
-{% if isTeacher %}
-    <a class="btn" href="{% url 'webservice.views.task.create' currentCourseSession.id %}">Add task</a>
-{% endif %}
 {% endblock %}

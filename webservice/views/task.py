@@ -1,9 +1,15 @@
 from django.forms.models import modelformset_factory, HiddenInput
 from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect
-from webservice.models import Task, TaskFile, CourseSession
+from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher
 from webservice.forms import TaskForm
 from webservice.views.shared import getShared
+
+def userIsTeacher(user, courseSession):
+    teachers = CourseSessionTeacher.objects.filter(courseSession=courseSession)
+    teachers = [teacher.user for teacher in teachers]
+    return user in teachers
+
 
 def create(request, courseSessionId):
     layout = request.GET.get('layout')
@@ -13,6 +19,9 @@ def create(request, courseSessionId):
     #TODO: check if there is no such course session
     courseSession = CourseSession.objects.get(id=courseSessionId)
     course = courseSession.course
+    
+    if not userIsTeacher(request.user, courseSession):
+        return redirect('webservice.views.course.read', id=course.id)
 
     if request.method == 'POST':
         form = TaskForm(request.POST, request.FILES)
@@ -47,6 +56,10 @@ def update(request, id):
         return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
+
+    if not userIsTeacher(request.user, task.courseSession):
+        return redirect('webservice.views.course.read', id=task.courseSession.course.id)
+
     if request.method == 'POST':
         form = TaskForm(request.POST, request.FILES, instance=task)
         if form.is_valid():
@@ -65,7 +78,11 @@ def delete(request, id):
         return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
+
+    if not userIsTeacher(request.user, task.courseSession):
+        return redirect('webservice.views.course.read', id=course.id)
+
+    course = task.courseSession.course
     task.delete()
 
-    return redirect('webservice.views.course.index',
-            {'layout':layout})
+    return redirect('webservice.views.course.read', id=course.id)

@@ -53,7 +53,7 @@ router.register(r'studentAnswerFiles', StudentAnswerFileViewSet)
 urlpatterns = patterns('',
     url(r'^$', 'webservice.views.course.index'),
 
-    url(r'^login$', 'django.contrib.auth.views.login'),
+    url(r'^login$',  'webservice.views.auth.login'),
     url(r'^logout$', 'webservice.views.auth.logout'),
 
     url(r'^courses/$',                       'webservice.views.course.index'),
@@ -68,7 +68,7 @@ urlpatterns = patterns('',
     url(r'^courseSessions/update/(?P<id>\d+)/$',    'webservice.views.course_session.update'),
     url(r'^courseSessions/delete/(?P<id>\d+)/$',    'webservice.views.course_session.delete'),
 
-    url(r'^tasks/(?P<courseSessionId>\d+)/create/$',    'webservice.views.task.create'),
+    url(r'^course/(?P<courseSessionId>\d+)/addTask/$',  'webservice.views.task.create'),
     url(r'^tasks/(?P<id>\d+)/$',                        'webservice.views.task.read'),
     url(r'^tasks/update/(?P<id>\d+)/$',                 'webservice.views.task.update'),
     url(r'^tasks/delete/(?P<id>\d+)/$',                 'webservice.views.task.delete'),

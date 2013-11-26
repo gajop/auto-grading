@@ -1,21 +1,22 @@
 import django.contrib.auth as django_auth
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import  render, redirect
 from webservice.views.shared import getShared
 
 def login(request):
-    layout = request.GET.get('layout', 'horizontal')
-    username = request.POST['username']
-    password = request.POST['password']
-    user = auth.authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            django_auth.login(request, user) # Redirect to a success page.
-        else: # Return a 'disabled account' error message
-            return render(request,
-                          'registration/login.html',
-                          {'tasks':tasks, 'layout':layout, 'shared':getShared()})
-    else: # Return an 'invalid login' error message.
-        pass
+    django_auth.logout(request)
+    form = AuthenticationForm(data=request.POST)
+    if request.POST:
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = django_auth.authenticate(username=username, password=password)
+            if user is not None:
+                if user.is_active:
+                    django_auth.login(request, user)
+                    return redirect('webservice.views.course.index')
+    return render(request, 'registration/login.html', 
+            {'form':form, 'shared':getShared()})
 
 def logout(request):
     django_auth.logout(request)
