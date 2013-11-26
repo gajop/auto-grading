@@ -43,12 +43,6 @@ class Student(models.Model):
     def __unicode__(self):
         return self.studentID + ", " + self.firstName + " " + self.lastName
 
-class Teacher(models.Model):
-    user = models.OneToOneField(User)
-    firstName = models.CharField(blank=True, max_length=100)
-    lastName = models.CharField(blank=True, max_length=100)
-    department = models.ForeignKey(Department)
-
 #semester dynamic
 class CourseSession(models.Model):
     startDate = models.DateField(default=datetime.now, blank=True)
@@ -57,6 +51,12 @@ class CourseSession(models.Model):
     course = models.ForeignKey(Course)
     def __unicode__(self):
         return self.course.name + " " + unicode(self.startDate)
+
+class CourseSessionTeacher(models.Model):
+    courseSession = models.ForeignKey(CourseSession)
+    user = models.ForeignKey(User)
+    def __unicode__(self):
+        return unicode(self.user) + " @ " + unicode(self.courseSession)
 
 class StudentEnrollment(models.Model):
     startDate = models.DateField(default=datetime.now, blank=True)
@@ -69,9 +69,13 @@ class StudentEnrollment(models.Model):
 class Task(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=10000)
+    public = models.BooleanField(default=True, blank=True)
     courseSession = models.ForeignKey(CourseSession)
     def __unicode__(self):
-        return self.name
+        if self.public:
+            return self.name
+        else:
+            return self.name + " (not public) "
 
 class TaskFile(models.Model):
     task = models.ForeignKey(Task)

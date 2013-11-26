@@ -1,7 +1,8 @@
 from django.forms.models import modelformset_factory
 from django.db.models import Max
 from django.shortcuts import  render, redirect
-from webservice.models import Course, CourseSession, Task
+from django.contrib.auth.models import User
+from webservice.models import Course, CourseSession, CourseSessionTeacher, Task
 from webservice.forms import CourseForm
 from webservice.views.shared import getShared
 
@@ -38,15 +39,26 @@ def read(request, id):
         return redirect('webservice.views.course.index')
 
     course = Course.objects.get(id=id)
-    currentCourseSession = CourseSession.objects.filter(course=course, finished=False).order_by('startDate')[0]
+    courseSessions = CourseSession.objects.filter(course=course, finished=False).order_by('startDate')
+    currentCourseSession = courseSessions[0]
 
     tasks = []
     for v in Task.objects.filter(courseSession=currentCourseSession):
         tasks.append(v)
+    
+    teachers = CourseSessionTeacher.objects.filter(courseSession=currentCourseSession)
+    teachers = [teacher.user for teacher in teachers]
+
+    if request.user in teachers:
+        isTeacher = True
+    else:
+        isTeacher = False
 
     return render(request,
                   'course/read.html',
-                  {'course':course, 'tasks':tasks, 'layout':layout, 'shared':getShared()})
+                  {'course':course, 'tasks':tasks, 'courseSessions':courseSessions, 
+                   'currentCourseSession':currentCourseSession, 'isTeacher':isTeacher, 
+                   'layout':layout, 'shared':getShared()})
 
 
 def update(request, id):

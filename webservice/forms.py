@@ -18,4 +18,4 @@ class CourseSessionForm(ModelForm):
 class TaskForm(ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'public', 'courseSession']

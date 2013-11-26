@@ -11,12 +11,18 @@
 
 <div class="row">
 {% for task in tasks %}
-<div class="span4">
-    <h2>{{forloop.counter}}. {{task.name}}</h2>
-    <p>{{task.description}}</p>
+<!-- TODO: show hidden tasks to course teachers only -->
+    {% if task.public or isTeacher %}
+        <div class="span12">
+            <h2>{{forloop.counter}}. {{task.name}}</h2>
+            <p>{{task.description}}</p>
 
-    <p><a class="btn" href="{% url 'webservice.views.task.read' task.id%}">More&raquo;</a></p>
-</div>
+            <p><a class="btn" href="{% url 'webservice.views.task.read' task.id%}">More&raquo;</a></p>
+        </div>
+    {% endif %}
 {% endfor %}
 </div>
+{% if isTeacher %}
+    <a class="btn" href="{% url 'webservice.views.task.create' currentCourseSession.id %}">Add task</a>
+{% endif %}
 {% endblock %}

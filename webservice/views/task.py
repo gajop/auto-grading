@@ -1,56 +1,57 @@
-from django.forms.models import modelformset_factory
+from django.forms.models import modelformset_factory, HiddenInput
+from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect
-from webservice.models import Task, TaskFile
+from webservice.models import Task, TaskFile, CourseSession
 from webservice.forms import TaskForm
 from webservice.views.shared import getShared
 
-def index(request):
-    layout = request.GET.get('layout')
-    tasks = []
-    for v in Task.objects.all():
-        tasks.append(v)
-    return render(request,
-                  'task/index.html',
-                  {'tasks':tasks, 'layout':layout, 'shared':getShared()})
-
-def create(request):
+def create(request, courseSessionId):
     layout = request.GET.get('layout')
     if not layout:
         layout = 'vertical'
+
+    #TODO: check if there is no such course session
+    courseSession = CourseSession.objects.get(id=courseSessionId)
+    course = courseSession.course
+
     if request.method == 'POST':
         form = TaskForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('webservice.views.task.index')
+            return redirect('webservice.views.course.read', id=courseSession.course.id)
     else:
         form = TaskForm() # An unbound form
 
+    form.fields['courseSession'].initial = courseSessionId
+    form.fields['courseSession'].widget = HiddenInput()
     return render(request,
                   'task/create.html',
-                  {'form':form, 'layout':layout, 'shared':getShared()})
+                  {'form':form, 'courseSession':courseSession, 'course':course,
+                   'layout':layout, 'shared':getShared()})
 
 def read(request, id):
     layout = request.GET.get('layout')
     if not Task.objects.filter(id=id).exists():
-        return redirect('webservice.views.task.index')
+        return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
+    course = task.courseSession.course
     return render(request,
                   'task/read.html',
-                  {'task':task,'layout':layout, 'shared':getShared()})
+                  {'task':task, 'course':course, 'layout':layout, 'shared':getShared()})
 
 
 def update(request, id):
     layout = request.GET.get('layout')
     if not Task.objects.filter(id=id).exists():
-        return redirect('webservice.views.task.index')
+        return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
     if request.method == 'POST':
         form = TaskForm(request.POST, request.FILES, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('webservice.views.task.index')
+            return redirect('webservice.views.course.index')
     else:
         form = TaskForm(instance=task) # An unbound form
 
@@ -61,10 +62,10 @@ def update(request, id):
 def delete(request, id):
     layout = request.GET.get('layout')
     if not Task.objects.filter(id=id).exists():
-        return redirect('webservice.views.task.index')
+        return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
     task.delete()
 
-    return redirect('webservice.views.task.index',
+    return redirect('webservice.views.course.index',
             {'layout':layout})

@@ -68,11 +68,10 @@ urlpatterns = patterns('',
     url(r'^courseSessions/update/(?P<id>\d+)/$',    'webservice.views.course_session.update'),
     url(r'^courseSessions/delete/(?P<id>\d+)/$',    'webservice.views.course_session.delete'),
 
-    url(r'^tasks/$',                       'webservice.views.task.index'),
-    url(r'^tasks/create/$',                'webservice.views.task.create'),
-    url(r'^tasks/(?P<id>\d+)/$',           'webservice.views.task.read'),
-    url(r'^tasks/update/(?P<id>\d+)/$',    'webservice.views.task.update'),
-    url(r'^tasks/delete/(?P<id>\d+)/$',    'webservice.views.task.delete'),
+    url(r'^tasks/(?P<courseSessionId>\d+)/create/$',    'webservice.views.task.create'),
+    url(r'^tasks/(?P<id>\d+)/$',                        'webservice.views.task.read'),
+    url(r'^tasks/update/(?P<id>\d+)/$',                 'webservice.views.task.update'),
+    url(r'^tasks/delete/(?P<id>\d+)/$',                 'webservice.views.task.delete'),
 
     url(r'^submit_answer/', 'webservice.views.custom.submit_answer'),
     # Uncomment the next line to enable the admin:
