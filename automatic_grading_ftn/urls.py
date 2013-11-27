@@ -1,9 +1,10 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.models import User, Group
+
+from rest_framework import viewsets, routers
 from webservice.models import Department, Course, Student, \
         Task, TaskFile, CourseSession, StudentEnrollment, \
         SubmitRequest, StudentAnswerFile, StudentAnswerTestResult, StudentAnswer
-from rest_framework import viewsets, routers
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -63,6 +64,7 @@ urlpatterns = patterns('',
     url(r'^courses/delete/(?P<id>\d+)/$',    'webservice.views.course.delete'),
 
     url(r'^course/(?P<courseSessionId>\d+)/addTask/$', 'webservice.views.task.create'),
+    url(r'^course/(?P<courseSessionId>\d+)/addTaskAjax/$', 'webservice.views.task.createAjax'),
     url(r'^task/(?P<id>\d+)/$',                        'webservice.views.task.read'),
     url(r'^task/(?P<id>\d+)/(?P<fileName>[^/]+)',      'webservice.views.task.fileDownload'),
     url(r'^task/update/(?P<id>\d+)/$',                 'webservice.views.task.update'),

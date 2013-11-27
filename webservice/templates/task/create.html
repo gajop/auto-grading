@@ -6,32 +6,80 @@
 
 {% block extra_head %}
 {% load staticfiles %}
-<script src="{% static "js/form.js" %}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="{% static "js/vendor/jquery.ui.widget.js" %}"></script>
+<script src="{% static "js/jquery.iframe-transport.js" %}"></script>
+<script src="{% static "js/jquery.fileupload.js" %}"></script>
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo(document.body);
+            });
+        },        
+        add: function (e, data) {
+            $.each(data.files, function (index, file) {
+                var count = $("#taskFiles tr").length;
+
+                var newFileDiv = '<tr>';
+                newFileDiv += '<td>' + file.name + '</td>';
+                newFileDiv += '<td><input type="checkbox"/></td>';
+                newFileDiv += '</tr>';
+
+                $("#taskFiles").append(newFileDiv);
+
+                $(".table").show();
+            });
+        }
+    });
+});
+
+function test() {
+    $.ajax({
+        url:"{% url 'webservice.views.task.createAjax' courseSession.id %}",
+        type:'GET',
+        success: function(result) {
+            alert(result);
+        }
+    });
+}
+</script>
+
 {% endblock %}
 
 {% block content %}
+
+<h3>Add task</h3>
 <form class="form" 
     action="{% url 'webservice.views.task.create' courseSession.id %}" method="post"
     enctype="multipart/form-data">
 
     {% csrf_token %}
     {{ form|as_bootstrap }}
+    
+    <hr/>
+    <h4>Files</h4>
+    <span class="btn btn-success fileinput-button">
+        <span>Add files...</span>
+        <input type="file" id="fileupload" name="files[]" data-url="server/php/" multiple>
+    </span>
+    <table class="table" hidden>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Test file?</th>
+            </tr>
+        </thead>
+        <tbody id="taskFiles">
+        </tbody>
+    </table>
 
-    {{ taskFileFormset.management_form }}
-    {% for taskFileForm in taskFileFormset %}
-        <div class="table">
-        <table class='no_error'>
-            {{ taskFileForm.as_table }}
-        </table>
-        </div>
-    {% endfor %}
-
-    <input type="button" class="btn" value="Add More" id="add_more">
-    <script>
-        $('#add_more').click(function() {
-            cloneMore('div.table:last', 'form');
-        });
-    </script>
+    <hr/>
     <input type="submit" class="text btn btn-primary" />
+
 </form>
+<span class="btn btn-danger" onclick="test()">AJAX</span>
 {% endblock %}

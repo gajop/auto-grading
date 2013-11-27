@@ -1,6 +1,7 @@
 from django.forms.models import modelformset_factory, formset_factory, HiddenInput
 from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect, HttpResponse
+from django.utils import simplejson
 
 from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher
 from webservice.forms import TaskForm, TaskFileForm
@@ -11,6 +12,10 @@ def userIsTeacher(user, courseSession):
     teachers = [teacher.user for teacher in teachers]
     return user in teachers
 
+def createAjax(request, courseSessionId):
+    post = request.POST.copy()
+    d = { "msg": "Success!" }
+    return HttpResponse(simplejson.dumps(d))
 
 def create(request, courseSessionId):
     #TODO: check if there is no such course session
@@ -20,6 +25,7 @@ def create(request, courseSessionId):
     if not userIsTeacher(request.user, courseSession):
         return redirect('webservice.views.course.read', id=course.id)
 
+    print(request)
     print(request.FILES)
     TaskFileFormSet = formset_factory(TaskFileForm, max_num=10)
     if request.method == 'POST':
