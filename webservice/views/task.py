@@ -43,7 +43,7 @@ def create(request, courseSessionId):
                   'task/create.html',
                   {'form':form, 'taskFileFormset':taskFileFormset, 
                    'courseSession':courseSession, 'course':course,
-                   'shared':getShared()})
+                   'shared':getShared(request)})
 
 def fileDownload(request, id, fileName):
     task = Task.objects.get(id=id)
@@ -74,7 +74,7 @@ def read(request, id):
     return render(request,
                   'task/read.html',
                   {'task':task, 'taskFiles':taskFiles, 'course':course, 
-                   'layout':layout, 'shared':getShared()})
+                   'layout':layout, 'shared':getShared(request)})
 
 
 def update(request, id):
@@ -97,7 +97,7 @@ def update(request, id):
 
     return render(request,
                   'task/update.html',
-                  {'task':task, 'form':form, 'layout':layout, 'shared':getShared()})
+                  {'task':task, 'form':form, 'layout':layout, 'shared':getShared(request)})
 
 def delete(request, id):
     layout = request.GET.get('layout')

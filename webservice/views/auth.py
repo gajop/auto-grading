@@ -16,7 +16,7 @@ def login(request):
                     django_auth.login(request, user)
                     return redirect('webservice.views.course.index')
     return render(request, 'registration/login.html', 
-            {'form':form, 'shared':getShared()})
+            {'form':form, 'shared':getShared(request)})
 
 def logout(request):
     django_auth.logout(request)

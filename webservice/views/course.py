@@ -17,7 +17,7 @@ def index(request):
         courses.append(v)
     return render(request,
                   'course/index.html',
-                  {'courses': courses, 'layout': layout, 'shared':getShared()} )
+                  {'courses': courses, 'layout': layout, 'shared':getShared(request)} )
 
 def create(request):
     layout = request.GET.get('layout', 'horizontal')
@@ -31,7 +31,7 @@ def create(request):
 
     return render(request,
                   'course/create.html',
-                  {'form':form, 'layout':layout, 'shared':getShared()})
+                  {'form':form, 'layout':layout, 'shared':getShared(request)})
 
 def read(request, id):
     layout = request.GET.get('layout', 'vertical')
@@ -58,7 +58,7 @@ def read(request, id):
                   'course/read.html',
                   {'course':course, 'tasks':tasks, 'courseSessions':courseSessions, 
                    'currentCourseSession':currentCourseSession, 'isTeacher':isTeacher, 
-                   'layout':layout, 'shared':getShared()})
+                   'layout':layout, 'shared':getShared(request)})
 
 
 def update(request, id):
@@ -77,7 +77,7 @@ def update(request, id):
 
     return render(request,
                   'course/update.html',
-                  {'Course' : course, 'layout': layout, 'form': form, 'shared':getShared()} )
+                  {'Course' : course, 'layout': layout, 'form': form, 'shared':getShared(request)} )
 
 def delete(request, id):
     layout = request.GET.get('layout')

@@ -5,19 +5,22 @@
 {% block content %}
 
 <div class="well">
-    <h1>{{course.shortName}} - {{course.name}}</h1>
+    <h3>{{course.shortName}} - {{course.name}}</h3>
     <p>{{course.description}}</p>
 </div>
 
-<h2>Tasks</h2>
+<h4>Tasks:</h4>
+<hr/>
+
 {% if isTeacher %}
-    <a class="btn" href="{% url 'webservice.views.task.create' currentCourseSession.id %}">Add task</a>
+    <a class="btn btn-success" href="{% url 'webservice.views.task.create' currentCourseSession.id %}">Add task</a>
 {% endif %}
+
 <div class="row">
 {% for task in tasks %}
     {% if task.public or isTeacher %}
         <div class="span12">
-            <h2>{{forloop.counter}}. {{task.name}}</h2>
+            <h4>{{forloop.counter}}. {{task.name}}</h4>
             <p>{{task.description}}</p>
 
             <div class="row">
@@ -26,13 +29,14 @@
                 </div>
             {% if isTeacher %}
                 <div class="span1">
-                    <a class="btn" href="{% url 'webservice.views.task.delete' task.id%}">Delete</a>
+                    <a class="btn btn-danger" href="{% url 'webservice.views.task.delete' task.id%}">Delete</a>
                 </div>
-            </div>
             {% endif %}
+            </div>
 
         </div>
     {% endif %}
 {% endfor %}
 </div>
+
 {% endblock %}

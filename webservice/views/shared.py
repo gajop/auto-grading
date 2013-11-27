@@ -1,35 +1,27 @@
 from django.core.urlresolvers import reverse
 from webservice.models import Course, StudentEnrollment, Student
 
-def getShared():
+def getShared(request):
     s = {
-        'menu' : mainMenu(),
-        'courses' : getCourses()
+        'menu' : mainMenu(request),
+        'courses' : getCourses(request)
     }
     return s
 
-def mainMenu():
+def mainMenu(request):
     menus = [
     ]
-    # TODO:
-    # if user logged in... account settings
-    # else sign in/register
-    """
-    eventsMenu = {
-          "name" : 'Events',
-          "view" : reverse('webservice.views.event.index'),
-          "submenu" : []
+    adminMenu = {
+        "name":"Admin",
+        "view":"/admin",
+        "submenu":[],
     }
-    eventsMenu["submenu"].append({
-                       "name" : "Add",
-                       "view" : reverse("webservice.views.event.create"),
-                       "submenu" : [],
-    })
-    menus.append(eventsMenu)
-    """
+
+    if request.user.is_superuser:
+        menus.append(adminMenu)
     return menus
 
-def getCourses():
+def getCourses(request):
     courses = []
     for v in Course.objects.all():
         courses.append(v)

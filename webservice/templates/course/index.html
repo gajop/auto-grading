@@ -5,18 +5,21 @@
 {% block content %}
 
 <div class="well">
-    <h1>Courses</h1>
+    <h3>Courses</h3>
 </div>
 
 <div class="row">
 {% for course in courses %}
-<div class="span10">
-<h2>{{ course.name }}</h2>
-<p>{{ course.description }}</p>
-<a class="btn" href="{% url 'webservice.views.course.read' course.id %}">More&raquo;</a>
-</div>
+    <div class="span10">
+        <h4>{{ course.name }}</h4>
+        <p>{{ course.description }}</p>
+        <a class="btn" href="{% url 'webservice.views.course.read' course.id %}">More&raquo;</a>
+    </div>
 {% endfor %}
 </div>
 </br>
-<a class="btn" href="{% url 'webservice.views.course.create' %}">Add course</a>
+{% if user.is_superuser %}
+<!-- TODO: instead check if user has permission to add courses -->
+<a class="btn btn-success" href="{% url 'webservice.views.course.create' %}">Add course</a>
+{% endif %}
 {% endblock %}
