@@ -1,8 +1,9 @@
-from django.forms.models import modelformset_factory, HiddenInput
+from django.forms.models import modelformset_factory, formset_factory, HiddenInput
 from django.forms import ModelChoiceField
-from django.shortcuts import  render, redirect
+from django.shortcuts import  render, redirect, HttpResponse
+
 from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher
-from webservice.forms import TaskForm
+from webservice.forms import TaskForm, TaskFileForm
 from webservice.views.shared import getShared
 
 def userIsTeacher(user, courseSession):
@@ -12,10 +13,6 @@ def userIsTeacher(user, courseSession):
 
 
 def create(request, courseSessionId):
-    layout = request.GET.get('layout')
-    if not layout:
-        layout = 'vertical'
-
     #TODO: check if there is no such course session
     courseSession = CourseSession.objects.get(id=courseSessionId)
     course = courseSession.course
@@ -23,20 +20,46 @@ def create(request, courseSessionId):
     if not userIsTeacher(request.user, courseSession):
         return redirect('webservice.views.course.read', id=course.id)
 
+    print(request.FILES)
+    TaskFileFormSet = formset_factory(TaskFileForm, max_num=10)
     if request.method == 'POST':
         form = TaskForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        taskFileFormset = TaskFileFormSet(request.POST, request.FILES)
+        if form.is_valid() and taskFileFormset.is_valid():
+            task = form.save()
+            for taskFileForm in taskFileFormset.forms:
+                taskFile = taskFileForm.save(commit=False)
+                taskFile.task = task
+                print("New taskFile: " + str(taskFile))
+                taskFile.save()
             return redirect('webservice.views.course.read', id=courseSession.course.id)
     else:
         form = TaskForm() # An unbound form
+        taskFileFormset = TaskFileFormSet()
 
     form.fields['courseSession'].initial = courseSessionId
     form.fields['courseSession'].widget = HiddenInput()
     return render(request,
                   'task/create.html',
-                  {'form':form, 'courseSession':courseSession, 'course':course,
-                   'layout':layout, 'shared':getShared()})
+                  {'form':form, 'taskFileFormset':taskFileFormset, 
+                   'courseSession':courseSession, 'course':course,
+                   'shared':getShared()})
+
+def fileDownload(request, id, fileName):
+    task = Task.objects.get(id=id)
+    course = task.courseSession.course
+
+    filePath = "task_file/task_file/" + str(id) + "/" + fileName
+    taskFile = TaskFile.objects.get(task=task, taskFile=filePath)
+
+    if (not task.public or taskFile.isTestFile) and \
+            not userIsTeacher(request.user, task.courseSession):
+        return redirect('webservice.views.course.read', id=course.id)
+
+    response = HttpResponse(taskFile.taskFile, content_type='text/plain')
+    response['Content-Length'] = len(response.content)
+    response['Content-Disposition'] = 'attachment; filename=' + fileName 
+    return response
 
 def read(request, id):
     layout = request.GET.get('layout')
@@ -44,10 +67,14 @@ def read(request, id):
         return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
+    taskFiles = TaskFile.objects.filter(task=task)
+    for taskFile in taskFiles:
+        print(taskFile.taskFile)
     course = task.courseSession.course
     return render(request,
                   'task/read.html',
-                  {'task':task, 'course':course, 'layout':layout, 'shared':getShared()})
+                  {'task':task, 'taskFiles':taskFiles, 'course':course, 
+                   'layout':layout, 'shared':getShared()})
 
 
 def update(request, id):
@@ -78,11 +105,11 @@ def delete(request, id):
         return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
+    course = task.courseSession.course
 
     if not userIsTeacher(request.user, task.courseSession):
         return redirect('webservice.views.course.read', id=course.id)
 
-    course = task.courseSession.course
     task.delete()
 
     return redirect('webservice.views.course.read', id=course.id)

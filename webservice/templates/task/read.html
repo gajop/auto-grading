@@ -7,4 +7,12 @@
     <h1>{{task.name}}</h1>
     <p>{{task.description}}</p>
 </div>
+<h3>Files:</h3>
+<ul>
+{% for taskFile in taskFiles %}
+<li>
+<a href="{% url 'webservice.views.task.fileDownload' task.id taskFile.filename %}">{{taskFile.filename}}</a>
+</li>
+{% endfor %}
+</ul>
 {% endblock %}

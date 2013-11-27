@@ -4,11 +4,34 @@
 
 {% block title %}Add task{% endblock %}
 
+{% block extra_head %}
+{% load staticfiles %}
+<script src="{% static "js/form.js" %}"></script>
+{% endblock %}
+
 {% block content %}
-<form class="form-{{ layout }}" 
+<form class="form" 
     action="{% url 'webservice.views.task.create' courseSession.id %}" method="post"
-    {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>{% csrf_token %}
-{{ form|as_bootstrap:layout }}
-<input type="submit" class="text btn btn-primary" />
+    enctype="multipart/form-data">
+
+    {% csrf_token %}
+    {{ form|as_bootstrap }}
+
+    {{ taskFileFormset.management_form }}
+    {% for taskFileForm in taskFileFormset %}
+        <div class="table">
+        <table class='no_error'>
+            {{ taskFileForm.as_table }}
+        </table>
+        </div>
+    {% endfor %}
+
+    <input type="button" class="btn" value="Add More" id="add_more">
+    <script>
+        $('#add_more').click(function() {
+            cloneMore('div.table:last', 'form');
+        });
+    </script>
+    <input type="submit" class="text btn btn-primary" />
 </form>
 {% endblock %}

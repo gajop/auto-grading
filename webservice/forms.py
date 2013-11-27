@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, Textarea
 
 from webservice.models import Department, Course, Student, \
         Task, TaskFile, CourseSession, StudentEnrollment, \
@@ -19,3 +19,11 @@ class TaskForm(ModelForm):
     class Meta:
         model = Task
         fields = ['name', 'description', 'public', 'courseSession']
+        widgets = {
+                'description': Textarea(attrs={'rows':5})
+        }
+
+class TaskFileForm(ModelForm):
+    class Meta:
+        model = TaskFile
+        exclude = ('task',)

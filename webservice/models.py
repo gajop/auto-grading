@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import partial
 import os
+import os.path
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -80,9 +81,11 @@ class Task(models.Model):
 class TaskFile(models.Model):
     task = models.ForeignKey(Task)
     taskFile = models.FileField(upload_to=partial(groupFilesForTask, "task_file", "task_file"))
-    isTestFile = models.BooleanField()
+    isTestFile = models.BooleanField(default=False, blank=True)
     def __unicode__(self):
         return unicode(self.task) + " " + unicode(self.taskFile.name)
+    def filename(self):
+        return os.path.basename(self.taskFile.name)
 
 #course dynamic
 class SubmitRequest(models.Model):
