@@ -7,6 +7,7 @@ from webservice.forms import CourseForm
 from webservice.views.shared import getShared
 
 def index(request):
+    print(request.LANGUAGE_CODE)
     layout = request.GET.get('layout')
     courses = []
     for v in Course.objects.all():

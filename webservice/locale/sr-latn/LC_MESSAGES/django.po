@@ -1,0 +1,16 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: templates/base.html:71
+msgid "Logout"
+msgstr "Odjava"
+
+#: templates/base.html:78
+msgid "Login"
+msgstr "Prijava"
+
+#: templates/base.html:91
+msgid "Courses"
+msgstr "Kursevi"

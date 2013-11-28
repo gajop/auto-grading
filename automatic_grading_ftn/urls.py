@@ -54,6 +54,8 @@ router.register(r'studentAnswerFiles', StudentAnswerFileViewSet)
 urlpatterns = patterns('',
     url(r'^$', 'webservice.views.course.index'),
 
+    (r'^i18n/', include('django.conf.urls.i18n')),
+
     url(r'^login$',  'webservice.views.auth.login'),
     url(r'^logout$', 'webservice.views.auth.logout'),
 
