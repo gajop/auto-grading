@@ -1,7 +1,7 @@
 from django.forms.models import modelformset_factory, formset_factory, HiddenInput
 from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect, HttpResponse
-from django.utils import simplejson
+from django.utils import simplejson as json
 
 from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher
 from webservice.forms import TaskForm, TaskFileForm
@@ -12,10 +12,37 @@ def userIsTeacher(user, courseSession):
     teachers = [teacher.user for teacher in teachers]
     return user in teachers
 
+def getFormErrors(form):
+    return dict(form.error.items())
+
 def createAjax(request, courseSessionId):
-    post = request.POST.copy()
-    d = { "msg": "Success!" }
-    return HttpResponse(simplejson.dumps(d))
+    data = {"success":False} 
+
+    if request.method == 'POST':
+        form = TaskForm(request.POST, request.FILES)
+        if form.is_valid():
+            task = form.save()
+            data["success"] = True
+            data["id"] = task.id
+        else:
+            data["errors"] = form.errors.items()
+
+    return HttpResponse(json.dumps(data), mimetype='application/json')
+
+def addTaskFiles(request, taskId):
+    data = {"success":False} 
+
+    if request.method == 'POST':
+        form = TaskFile(request.POST, request.FILES)
+        if form.is_valid():
+            task = form.save()
+            data["success"] = True
+            data["id"] = task.id
+        else:
+            data["errors"] = form.errors.items()
+
+    return HttpResponse(json.dumps(data), mimetype='application/json')
+    
 
 def create(request, courseSessionId):
     #TODO: check if there is no such course session
@@ -25,7 +52,6 @@ def create(request, courseSessionId):
     if not userIsTeacher(request.user, courseSession):
         return redirect('webservice.views.course.read', id=course.id)
 
-    print(request)
     print(request.FILES)
     TaskFileFormSet = formset_factory(TaskFileForm, max_num=10)
     if request.method == 'POST':
@@ -36,7 +62,6 @@ def create(request, courseSessionId):
             for taskFileForm in taskFileFormset.forms:
                 taskFile = taskFileForm.save(commit=False)
                 taskFile.task = task
-                print("New taskFile: " + str(taskFile))
                 taskFile.save()
             return redirect('webservice.views.course.read', id=courseSession.course.id)
     else:

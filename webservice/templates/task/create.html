@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load bootstrap_toolkit %}
+{% load i18n %}
 
 {% block title %}Add task{% endblock %}
 
@@ -11,12 +12,14 @@
 <script src="{% static "js/vendor/jquery.ui.widget.js" %}"></script>
 <script src="{% static "js/jquery.iframe-transport.js" %}"></script>
 <script src="{% static "js/jquery.fileupload.js" %}"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
 <script>
 $(function () {
     $('#fileupload').fileupload({
         dataType: 'json',
         done: function (e, data) {
             $.each(data.result.files, function (index, file) {
+                alert("added file");
                 $('<p/>').text(file.name).appendTo(document.body);
             });
         },        
@@ -37,15 +40,30 @@ $(function () {
     });
 });
 
-function test() {
-    $.ajax({
+$(document).ready(function() {
+    $("#taskForm").ajaxForm({
         url:"{% url 'webservice.views.task.createAjax' courseSession.id %}",
-        type:'GET',
+        type:'post',
         success: function(result) {
-            alert(result);
+            $("span.error").remove();
+            $(".error").removeClass("error");
+
+            $("#fileupload").fileupload('send');
+            if (result.success) {
+//                $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
+            } else {                
+                $.each(result.errors, function(i, val) {
+                    id = val[0];
+                    error = val[1][0];                    
+                    console.log(id, error);
+
+                    $("#id_" + id).parent().parent().addClass("error");
+                    $("#id_" + id).parent().append('<span class="help-inline error">' + error + '</span>');
+                });
+            }            
         }
     });
-}
+});
 </script>
 
 {% endblock %}
@@ -53,24 +71,23 @@ function test() {
 {% block content %}
 
 <h3>Add task</h3>
-<form class="form" 
-    action="{% url 'webservice.views.task.create' courseSession.id %}" method="post"
-    enctype="multipart/form-data">
+<form class="form" id="taskForm" enctype="multipart/form-data">
 
     {% csrf_token %}
     {{ form|as_bootstrap }}
     
     <hr/>
     <h4>Files</h4>
+    {{ taskFileFormset.management_form }}
     <span class="btn btn-success fileinput-button">
-        <span>Add files...</span>
-        <input type="file" id="fileupload" name="files[]" data-url="server/php/" multiple>
+        <span>{% trans 'Add files' %}...</span>
+        <input type="file" id="fileupload" name="files[]" data-url="{% url 'webservice.views.task.addTaskFiles' 2 %}" multiple>
     </span>
     <table class="table" hidden>
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Test file?</th>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Test file?' %}</th>
             </tr>
         </thead>
         <tbody id="taskFiles">
@@ -81,5 +98,4 @@ function test() {
     <input type="submit" class="text btn btn-primary" />
 
 </form>
-<span class="btn btn-danger" onclick="test()">AJAX</span>
 {% endblock %}

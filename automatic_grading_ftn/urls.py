@@ -67,6 +67,7 @@ urlpatterns = patterns('',
 
     url(r'^course/(?P<courseSessionId>\d+)/addTask/$', 'webservice.views.task.create'),
     url(r'^course/(?P<courseSessionId>\d+)/addTaskAjax/$', 'webservice.views.task.createAjax'),
+    url(r'^task/(?P<taskId>\d+)/addTaskFiles/$',        'webservice.views.task.addTaskFiles'),
     url(r'^task/(?P<id>\d+)/$',                        'webservice.views.task.read'),
     url(r'^task/(?P<id>\d+)/(?P<fileName>[^/]+)',      'webservice.views.task.fileDownload'),
     url(r'^task/update/(?P<id>\d+)/$',                 'webservice.views.task.update'),
