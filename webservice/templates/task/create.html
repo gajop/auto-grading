@@ -15,53 +15,50 @@
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <script>
 $(function () {
+    window.allFiles = [];
+    $('#id_form-TOTAL_FORMS').val(0);
+
     $('#fileupload').fileupload({
         dataType: 'json',
         done: function (e, data) {
-            $.each(data.result.files, function (index, file) {
-                alert("added file");
-                $('<p/>').text(file.name).appendTo(document.body);
-            });
-        },        
+            result = data.result;
+            if (result.success) {
+                $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
+            } else {                
+                $.each(result.errors, function(i, val) {
+                    id = val[0];
+                    error = val[1][0];                    
+
+                    $("#id_" + id).parent().parent().addClass("error");
+                    $("#id_" + id).parent().append('<span class="help-inline error">' + error + '</span>');
+                });
+            }            
+        },
+        error: function(e, data) {
+            alert("error happened");
+        },
         add: function (e, data) {
             $.each(data.files, function (index, file) {
+                window.allFiles.push(file);
                 var count = $("#taskFiles tr").length;
-
                 var newFileDiv = '<tr>';
-                newFileDiv += '<td>' + file.name + '</td>';
-                newFileDiv += '<td><input type="checkbox"/></td>';
-                newFileDiv += '</tr>';
-
+                newFileDiv    += '<input type="hidden" value="' + file.name + '" name="form-' + count + '-taskFile"/>';
+                newFileDiv    += '<td>' + file.name + '</td>';
+                newFileDiv    += '<td><input type="checkbox" name="form-' + count + 'isTestFile"/></td>';
+                newFileDiv    += '</tr>';
+                
                 $("#taskFiles").append(newFileDiv);
 
                 $(".table").show();
             });
         }
     });
-});
 
-$(document).ready(function() {
-    $("#taskForm").ajaxForm({
-        url:"{% url 'webservice.views.task.createAjax' courseSession.id %}",
-        type:'post',
-        success: function(result) {
-            $("span.error").remove();
-            $(".error").removeClass("error");
-
-            $("#fileupload").fileupload('send');
-            if (result.success) {
-//                $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
-            } else {                
-                $.each(result.errors, function(i, val) {
-                    id = val[0];
-                    error = val[1][0];                    
-                    console.log(id, error);
-
-                    $("#id_" + id).parent().parent().addClass("error");
-                    $("#id_" + id).parent().append('<span class="help-inline error">' + error + '</span>');
-                });
-            }            
-        }
+    $("#taskForm").submit(function(e) {
+        $("span.error").remove();
+        $(".error").removeClass("error");
+        $("#fileupload").fileupload('send', {files:window.allFiles});
+        event.preventDefault();
     });
 });
 </script>
@@ -78,10 +75,9 @@ $(document).ready(function() {
     
     <hr/>
     <h4>Files</h4>
-    {{ taskFileFormset.management_form }}
     <span class="btn btn-success fileinput-button">
         <span>{% trans 'Add files' %}...</span>
-        <input type="file" id="fileupload" name="files[]" data-url="{% url 'webservice.views.task.addTaskFiles' 2 %}" multiple>
+        <input type="file" id="fileupload" name="files[]" data-url="{% url 'webservice.views.task.create' courseSession.id %}" multiple>
     </span>
     <table class="table" hidden>
         <thead>

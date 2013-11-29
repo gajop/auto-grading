@@ -25,9 +25,9 @@ class TaskForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
+        #hack needed to make Textarea take the appropriate size
         self.fields['description'].widget.attrs['class'] = "input-block-level"
 
 class TaskFileForm(ModelForm):
     class Meta:
         model = TaskFile
-        exclude = ('task',)
