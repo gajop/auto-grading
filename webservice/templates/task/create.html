@@ -15,9 +15,10 @@
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <script>
 $(function () {
-    window.allFiles = [];
-    $('#id_form-TOTAL_FORMS').val(0);
-
+    {% comment %} hack needed so .send gets triggered even if there are no files {% endcomment %}
+    window.allFiles = new Object();
+    window.allFiles[-1] = '';
+    fileIdLast = -1;
     $('#fileupload').fileupload({
         dataType: 'json',
         done: function (e, data) {
@@ -39,15 +40,21 @@ $(function () {
         },
         add: function (e, data) {
             $.each(data.files, function (index, file) {
-                window.allFiles.push(file);
-                var count = $("#taskFiles tr").length;
-                var newFileDiv = '<tr>';
-                newFileDiv    += '<input type="hidden" value="' + file.name + '" name="form-' + count + '-taskFile"/>';
-                newFileDiv    += '<td>' + file.name + '</td>';
-                newFileDiv    += '<td><input type="checkbox" name="form-' + count + 'isTestFile"/></td>';
+                fileIdLast++;
+                window.allFiles[fileIdLast] = file;
+                var id = fileIdLast;
+                var newFileDiv = '<tr id="tr'+ id +'">';
+                newFileDiv    += '<input type="hidden" value="' + file.name + '" name="form-' + id + 'taskFile"/>';
+                newFileDiv    += '<td>' + file.name + '<span id="removeFile' + id + '" class="btn btn-link btn-mini removeFile"> <i class="icon-remove-circle"/></span> </td>';
+                newFileDiv    += '<td><input type="checkbox" name="form-' + id + 'isTestFile"/></td>';
                 newFileDiv    += '</tr>';
                 
                 $("#taskFiles").append(newFileDiv);
+
+                $("#removeFile"+id).on("click", function() {
+                    delete window.allFiles[id];
+                    $("#tr"+id).remove();
+                });
 
                 $(".table").show();
             });
@@ -57,7 +64,14 @@ $(function () {
     $("#taskForm").submit(function(e) {
         $("span.error").remove();
         $(".error").removeClass("error");
-        $("#fileupload").fileupload('send', {files:window.allFiles});
+        var filesArray = [];
+        $.each(window.allFiles, function(key, value) {
+            console.log(key, value)
+            var index = filesArray.push(value) - 1;
+            $('input[name=form-' + key + 'taskFile]').attr('name', 'form-' + index + 'taskFile');
+            $('input[name=form-' + key + 'isTestFile]').attr('name', 'form-' + index + 'isTestFile');
+        });
+        $("#fileupload").fileupload('send', {files:filesArray});
         event.preventDefault();
     });
 });

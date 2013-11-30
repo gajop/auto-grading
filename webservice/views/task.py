@@ -27,8 +27,13 @@ def create(request, courseSessionId):
         form = TaskForm(request.POST, request.FILES)
         if form.is_valid():
             task = form.save()
-            for uploadedFile in request.FILES.getlist('files[]'):
-                taskFile = TaskFile(task=task)
+            for i, uploadedFile in enumerate(request.FILES.getlist('files[]')):
+                checkBoxName = 'form-' + str(i) + 'isTestFile'
+                if checkBoxName in request.POST and request.POST[checkBoxName] == 'on':
+                    isTestFile = True
+                else:
+                    isTestFile = False
+                taskFile = TaskFile(task=task, isTestFile=isTestFile)
                 filename = uploadedFile.name
                 taskFile.taskFile.save(filename, uploadedFile)
                 taskFile.save()
