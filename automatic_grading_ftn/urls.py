@@ -65,11 +65,12 @@ urlpatterns = patterns('',
     url(r'^courses/update/(?P<id>\d+)/$',    'webservice.views.course.update'),
     url(r'^courses/delete/(?P<id>\d+)/$',    'webservice.views.course.delete'),
 
-    url(r'^course/(?P<courseSessionId>\d+)/addTask/$', 'webservice.views.task.create'),
-    url(r'^task/(?P<id>\d+)/$',                        'webservice.views.task.read'),
-    url(r'^task/(?P<id>\d+)/(?P<fileName>[^/]+)',      'webservice.views.task.fileDownload'),
-    url(r'^task/update/(?P<id>\d+)/$',                 'webservice.views.task.update'),
-    url(r'^task/delete/(?P<id>\d+)/$',                 'webservice.views.task.delete'),
+    url(r'^course/(?P<courseSessionId>\d+)/addTask/$',  'webservice.views.task.create'),
+    url(r'^task/(?P<id>\d+)/$',                         'webservice.views.task.read'),
+    url(r'^task/(?P<id>\d+)/files/(?P<fileName>[^/]+)', 'webservice.views.task.fileDownload'),
+    url(r'^task/update/(?P<id>\d+)/$',                  'webservice.views.task.update'),
+    url(r'^task/delete/(?P<id>\d+)/$',                  'webservice.views.task.delete'),
+    url(r'^task/(?P<id>\d+)/submitAnswer/$',            'webservice.views.task.submitAnswer'),
 
     url(r'^submit_answer/', 'webservice.views.custom.submit_answer'),
     # Uncomment the next line to enable the admin:

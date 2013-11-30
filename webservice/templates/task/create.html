@@ -22,9 +22,10 @@ $(function () {
     $('#fileupload').fileupload({
         dataType: 'json',
         done: function (e, data) {
+            $("#submitBtn").prop('disabled', false);
             result = data.result;
             if (result.success) {
-             //   $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
+                $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
             } else {                
                 $.each(result.errors, function(i, val) {
                     id = val[0];
@@ -36,6 +37,7 @@ $(function () {
             }            
         },
         error: function(e, data) {
+            $("#submitBtn").prop('disabled', false);
             alert("error happened");
         },
         add: function (e, data) {
@@ -68,6 +70,7 @@ $(function () {
     });
 
     $("#taskForm").submit(function(e) {
+        $("#submitBtn").prop('disabled', true);
         $("span.error").remove();
         $(".error").removeClass("error");
         var filesArray = [];
@@ -113,7 +116,7 @@ $(function () {
     </table>
 
     <hr/>
-    <input type="submit" class="text btn btn-primary" />
+    <input type="submit" id="submitBtn" class="text btn btn-primary" />
 
 </form>
 {% endblock %}

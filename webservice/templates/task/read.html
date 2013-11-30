@@ -1,7 +1,85 @@
 {% extends "base.html" %}
 
+{% load bootstrap_toolkit %}
+{% load i18n %}
+
 {% block title %}{{task.name}}{% endblock %}
 
+
+{% block extra_head %}
+{% load staticfiles %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="{% static "js/vendor/jquery.ui.widget.js" %}"></script>
+<script src="{% static "js/jquery.iframe-transport.js" %}"></script>
+<script src="{% static "js/jquery.fileupload.js" %}"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script>
+$(function () {
+    {% comment %} hack needed so .send gets triggered even if there are no files {% endcomment %}
+    window.allFiles = new Object();
+    window.allFiles[-1] = '';
+    fileIdLast = -1;
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+            $("#submitBtn").prop('disabled', false);
+            result = data.result;
+            if (result.success) {
+                //$(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
+            } else {
+                $.each(result.errors, function(i, val) {
+                    id = val[0];
+                    error = val[1][0];                    
+
+                    $("#id_" + id).parent().parent().addClass("error");
+                    $("#id_" + id).parent().append('<span class="help-inline error">' + error + '</span>');
+                });
+            }            
+        },
+        error: function(e, data) {
+            $("#submitBtn").prop('disabled', false);
+            alert("error happened");
+        },
+        add: function (e, data) {
+            $.each(data.files, function (index, file) {
+                fileIdLast++;
+                window.allFiles[fileIdLast] = file;
+                var id = fileIdLast;
+                var newFileDiv = '<tr id="tr'+ id +'">';
+                newFileDiv    += '<input type="hidden" value="' + file.name + '" name="form-' + id + 'answerFile"/>';
+                newFileDiv    += '<td>' + file.name + '<span id="removeFile' + id + '" class="btn btn-link btn-mini removeFile"> <i class="icon-remove-circle"/></span> </td>';            
+                newFileDiv    += '</tr>';
+                
+                $("#answerFiles").append(newFileDiv);
+
+                $("#removeFile"+id).on("click", function() {
+                    delete window.allFiles[id];
+                    $("#tr"+id).remove();
+                });
+
+                $(".table").show();
+            });
+        }
+    });
+
+    $("#answerForm").submit(function(e) {
+        $("#submitBtn").prop('disabled', true);
+        $("span.error").remove();
+        $(".error").removeClass("error");
+        var filesArray = [];
+        $.each(window.allFiles, function(key, value) {
+            console.log(key, value)
+            var index = filesArray.push(value) - 1;
+            $('input[name=form-' + key + 'answerFile]').attr('name', 'form-' + index + 'answerFile');
+        });
+        $("#fileupload").fileupload('send', {files:filesArray});
+        event.preventDefault();
+    });
+});
+</script>
+
+{% endblock %}
 {% block content %}
 <div class="well">
     <h3>{{task.name}}</h3>
@@ -19,4 +97,29 @@
     </ul>
 {% endif %}
 
+<h3>{% trans 'Submit answer' %}</h3>
+
+<form class="form" id="answerForm" enctype="multipart/form-data">
+
+    {% csrf_token %}
+    <hr/>
+    <h4>Files</h4>
+    <span class="btn btn-success fileinput-button">
+        <span>{% trans 'Add files' %}...</span>
+        <input type="file" id="fileupload" name="files[]" data-url="{% url 'webservice.views.task.submitAnswer' task.id %}" multiple>
+    </span>
+    <table class="table" hidden>
+        <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+            </tr>
+        </thead>
+        <tbody id="answerFiles">
+        </tbody>
+    </table>
+
+    <hr/>
+    <input type="submit" id="submitBtn" class="btn btn-primary" />
+
+</form>
 {% endblock %}

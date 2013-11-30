@@ -15,6 +15,24 @@ def userIsTeacher(user, courseSession):
 def getFormErrors(form):
     return dict(form.error.items())
 
+def submitAnswer(request, id):
+    if request.method == 'POST':
+        for i, uploadedFile in enumerate(request.FILES.getlist('files[]')):
+            print(i)
+            """
+            taskFile = TaskFile(task=task, isTestFile=isTestFile)
+            if fileType is not None:
+                taskFile.fileType = fileType
+            filename = uploadedFile.name
+            taskFile.taskFile.save(filename, uploadedFile)
+            taskFile.save()
+            """
+        if request.is_ajax():
+            data = {"success":True} 
+            return HttpResponse(json.dumps(data), content_type="application/json")
+
+    return redirect('webservice.views.task.read', id=id)
+
 def create(request, courseSessionId):
     #TODO: check if there is no such course session
     courseSession = CourseSession.objects.get(id=courseSessionId)
