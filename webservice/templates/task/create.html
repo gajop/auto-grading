@@ -24,7 +24,7 @@ $(function () {
         done: function (e, data) {
             result = data.result;
             if (result.success) {
-                $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
+             //   $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
             } else {                
                 $.each(result.errors, function(i, val) {
                     id = val[0];
@@ -45,7 +45,13 @@ $(function () {
                 var id = fileIdLast;
                 var newFileDiv = '<tr id="tr'+ id +'">';
                 newFileDiv    += '<input type="hidden" value="' + file.name + '" name="form-' + id + 'taskFile"/>';
-                newFileDiv    += '<td>' + file.name + '<span id="removeFile' + id + '" class="btn btn-link btn-mini removeFile"> <i class="icon-remove-circle"/></span> </td>';
+                newFileDiv    += '<td>' + file.name + '<span id="removeFile' + id + '" class="btn btn-link btn-mini removeFile"> <i class="icon-remove-circle"/></span> </td>';            
+                newFileDiv    += '<td><select name="form-' + id + 'fileType">';
+                {% for courseFileType in course.fileTypes.all %}
+                newFileDiv    += '<option value={{courseFileType.fileType.id}}>{{courseFileType.fileType.name}} </option>';
+                {% endfor %}
+                newFileDiv    += '<option value=-1>Unspecified</option>';
+                newFileDiv    += '</select></td>';
                 newFileDiv    += '<td><input type="checkbox" name="form-' + id + 'isTestFile"/></td>';
                 newFileDiv    += '</tr>';
                 
@@ -70,6 +76,7 @@ $(function () {
             var index = filesArray.push(value) - 1;
             $('input[name=form-' + key + 'taskFile]').attr('name', 'form-' + index + 'taskFile');
             $('input[name=form-' + key + 'isTestFile]').attr('name', 'form-' + index + 'isTestFile');
+            $('select[name=form-' + key + 'fileType]').attr('name', 'form-' + index + 'fileType');
         });
         $("#fileupload").fileupload('send', {files:filesArray});
         event.preventDefault();
@@ -97,6 +104,7 @@ $(function () {
         <thead>
             <tr>
                 <th>{% trans 'Name' %}</th>
+                <th>{% trans 'File type' %}</th>
                 <th>{% trans 'Test file?' %}</th>
             </tr>
         </thead>

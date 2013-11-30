@@ -1,11 +1,13 @@
 from django.contrib import admin
-from webservice.models import Department, Course, Student, \
+from webservice.models import Department, Course, Student, FileType, CourseFileType, \
         CourseSession, CourseSessionTeacher, StudentEnrollment, Task, TaskFile, \
         SubmitRequest, StudentAnswerFile, StudentAnswerTestResult, StudentAnswer
 
 admin.site.register(Department)
 admin.site.register(Course)
 admin.site.register(Student)
+admin.site.register(FileType)
+admin.site.register(CourseFileType)
 
 admin.site.register(CourseSession)
 admin.site.register(CourseSessionTeacher)

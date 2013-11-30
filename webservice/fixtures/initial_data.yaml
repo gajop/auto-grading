@@ -4,18 +4,38 @@
 - fields: {description: '', name: "Geodezija i Geomatika", shortName: O}
   model: webservice.department
   pk: 2
+
 - fields: {description: 'Razumevanje osnovnih numeričkih metoda i sposobnost njihove primena u rešavanju jednostavnijih inženjerskih zadataka korišćenjem numeričkih softverskih alata.', name: "Numeri\u010Dki algoritmi i numeri\u010Dki softver u in\u017Eenjerstvu", shortName: NANSI, department: 1}
   model: webservice.course
   pk: 1
 - fields: {description: 'Razumevanje osnovnih numeričkih metoda i sposobnost njihove primena u rešavanju jednostavnijih inženjerskih zadataka korišćenjem numeričkih softverskih alata.', name: "Numeri\u010Dke metode", shortName: NM, department: 2}
   model: webservice.course
   pk: 2
+
+- fields: {name: "Matlab", extension: ".m"}
+  model: webservice.FileType
+  pk: 1
+- fields: {name: "Python", extension: ".py"}
+  model: webservice.FileType
+  pk: 2
+- fields: {name: "Java", extension: ".java"}
+  model: webservice.FileType
+  pk: 3
+
+- fields: {course: 1, fileType: 1}
+  model: webservice.CourseFileType
+  pk: 1
+- fields: {course: 2, fileType: 1}
+  model: webservice.CourseFileType
+  pk: 2
+
 - fields: {course: 1, endDate: 2014-01-31, finished: false, startDate: 2013-10-14}
   model: webservice.coursesession
   pk: 1
 - fields: {course: 2, endDate: 2014-01-31, finished: false, startDate: 2013-10-14}
   model: webservice.coursesession
   pk: 2
+
 - fields: {name: "Factorial", description: "Implementacija faktoriala", courseSession: 1}
   pk: 1
   model: webservice.task

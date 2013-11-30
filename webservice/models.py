@@ -19,7 +19,14 @@ def groupFilesForTask(className, dir, instance, fileName):
     parentFolder = os.sep.join([className, dir, str(instance.task.id)])
     return os.sep.join([parentFolder, fileName])
 
-#static
+
+class FileType(models.Model):
+    name = models.CharField(max_length=100)
+    extension = models.CharField(max_length=10)
+    def __unicode__(self):
+        return self.name + " " + self.extension
+
+#mostly static
 class Department(models.Model):
     name = models.CharField(max_length=200)
     shortName = models.CharField(max_length=10)
@@ -35,6 +42,12 @@ class Course(models.Model):
     def __unicode__(self):
         return self.name
 
+class CourseFileType(models.Model):
+    course = models.ForeignKey(Course, related_name="fileTypes")
+    fileType = models.ForeignKey(FileType)
+    def __unicode__(self):
+        return self.course + " : " + self.fileType
+
 class Student(models.Model):
     user = models.OneToOneField(User)
     studentID = models.CharField(max_length=50)
@@ -44,7 +57,7 @@ class Student(models.Model):
     def __unicode__(self):
         return self.studentID + ", " + self.firstName + " " + self.lastName
 
-#semester dynamic
+#dynamic semester (frequency)
 class CourseSession(models.Model):
     startDate = models.DateField(default=datetime.now, blank=True)
     endDate = models.DateField(null=True, blank=True)
@@ -82,6 +95,7 @@ class TaskFile(models.Model):
     task = models.ForeignKey(Task)
     taskFile = models.FileField(blank=False, null=False, upload_to=partial(groupFilesForTask, "task_file", "task_file"))
     isTestFile = models.BooleanField(default=False, blank=True)
+    fileType = models.ForeignKey(FileType, null=True) # null means file type isn't specified
     def __unicode__(self):
         return unicode(self.task) + " " + unicode(self.taskFile.name) + " Test: " + unicode(self.isTestFile)
     def filename(self):

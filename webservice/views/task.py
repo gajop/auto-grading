@@ -3,7 +3,7 @@ from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect, HttpResponse
 import json
 
-from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher
+from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileType, FileType
 from webservice.forms import TaskForm, TaskFileForm
 from webservice.views.shared import getShared
 
@@ -28,12 +28,23 @@ def create(request, courseSessionId):
         if form.is_valid():
             task = form.save()
             for i, uploadedFile in enumerate(request.FILES.getlist('files[]')):
-                checkBoxName = 'form-' + str(i) + 'isTestFile'
-                if checkBoxName in request.POST and request.POST[checkBoxName] == 'on':
+                isTestFileName = 'form-' + str(i) + 'isTestFile'
+                if isTestFileName in request.POST and request.POST[isTestFileName] == 'on':
                     isTestFile = True
                 else:
                     isTestFile = False
+
+                fileTypeName = 'form-' + str(i) + 'fileType'
+
+                fileType = None
+                if fileTypeName in request.POST:
+                    fileTypeID = int(request.POST[fileTypeName])
+                    if fileTypeID != -1:
+                        fileType = FileType.objects.get(pk=fileTypeID)
+
                 taskFile = TaskFile(task=task, isTestFile=isTestFile)
+                if fileType is not None:
+                    taskFile.fileType = fileType
                 filename = uploadedFile.name
                 taskFile.taskFile.save(filename, uploadedFile)
                 taskFile.save()
