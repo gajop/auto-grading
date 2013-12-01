@@ -137,6 +137,7 @@ $(function () {
     </ul>
 {% endif %}
 
+{% if user.is_authenticated %}
 <h3>{% trans 'Submit answer' %}</h3>
 
 <form class="form" id="answerForm" enctype="multipart/form-data">
@@ -177,4 +178,7 @@ $(function () {
         </tbody>
     </table>
 </div>
+{% else %} {% comment %} user.is_authenticated{% endcomment %}
+<div class="alert">{% trans 'You must be logged in to submit solutions.' %}</div>
+{% endif %}
 {% endblock %}

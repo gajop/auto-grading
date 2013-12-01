@@ -46,18 +46,19 @@ def read(request, id):
         tasks = tasks.filter(public = True)
 
     #TODO: this could be too slow, revise maybe?
-    studentAnswers = StudentAnswer.objects.filter(student = request.user)
-    for task in tasks:
-        task.success = False
-        task.attempt = False
-        correctAnswers = studentAnswers.filter(task=task, success=True)
-        if correctAnswers.count() > 0:
-            task.success = True
-            task.attempt = True
-        else:
-            falseAnswers = studentAnswers.filter(task=task, success=False)
-            if falseAnswers.count() > 0:
+    if request.user.is_authenticated():
+        studentAnswers = StudentAnswer.objects.filter(student = request.user)
+        for task in tasks:
+            task.success = False
+            task.attempt = False
+            correctAnswers = studentAnswers.filter(task=task, success=True)
+            if correctAnswers.count() > 0:
+                task.success = True
                 task.attempt = True
+            else:
+                falseAnswers = studentAnswers.filter(task=task, success=False)
+                if falseAnswers.count() > 0:
+                    task.attempt = True
 
     return render(request,
                   'course/read.html',

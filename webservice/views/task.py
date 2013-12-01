@@ -1,7 +1,9 @@
+import json
+
 from django.forms.models import modelformset_factory, formset_factory, HiddenInput
 from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect, HttpResponse
-import json
+from django.contrib.auth.decorators import login_required
 
 from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileFormat, FileFormat
 from webservice.forms import TaskForm, TaskFileForm
@@ -11,6 +13,7 @@ from webservice.submit import processAnswer
 def getFormErrors(form):
     return dict(form.error.items())
 
+@login_required
 def submitAnswer(request, id):
     task = Task.objects.get(id=id)
     if request.method == 'POST':
