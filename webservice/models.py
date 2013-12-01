@@ -94,10 +94,17 @@ class Task(models.Model):
 class TaskFile(models.Model):
     task = models.ForeignKey(Task)
     taskFile = models.FileField(blank=False, null=False, upload_to=partial(groupFilesForTask, "task_file", "task_file"))
-    isTestFile = models.BooleanField(default=False, blank=True)
     fileFormat = models.ForeignKey(FileFormat, null=True)
+    
+    T_TEST = 1
+    T_IMPLEMENTATION = 2
+    TYPE_CHOICES = (
+        (T_TEST, "Test"),
+        (T_IMPLEMENTATION, "Implementation"),
+    )
+    fileType = models.IntegerField(choices=TYPE_CHOICES, null=True, blank=True)
     def __unicode__(self):
-        return unicode(self.task) + " " + unicode(self.taskFile.name) + " Test: " + unicode(self.isTestFile)
+        return unicode(self.task) + " " + unicode(self.taskFile.name) + " Test: " + self.fileType
     def filename(self):
         return os.path.basename(self.taskFile.name)
 

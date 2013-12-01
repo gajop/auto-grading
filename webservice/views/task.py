@@ -44,23 +44,26 @@ def create(request, courseSessionId):
         if form.is_valid():
             task = form.save()
             for i, uploadedFile in enumerate(request.FILES.getlist('files[]')):
-                isTestFileName = 'form-' + str(i) + 'isTestFile'
-                if isTestFileName in request.POST and request.POST[isTestFileName] == 'on':
-                    isTestFile = True
-                else:
-                    isTestFile = False
-
+                taskFile = TaskFile(task=task)
+                
                 fileFormatName = 'form-' + str(i) + 'fileFormat'
-
-                fileFormat = None
                 if fileFormatName in request.POST:
                     fileFormatID = int(request.POST[fileFormatName])
                     if fileFormatID != -1:
                         fileFormat = FileFormat.objects.get(pk=fileFormatID)
+                        taskFile.fileFormat = fileFormat
+                
+                fileTypeName = 'form-' + str(i) + 'fileType'
+                fileTypeID = int(request.POST[fileTypeName])
+                if fileTypeID != -1:
+                    taskFile.fileType = fileTypeID
 
-                taskFile = TaskFile(task=task, isTestFile=isTestFile)
-                if fileFormat is not None:
-                    taskFile.fileFormat = fileFormat
+
+#                if fileFormat is not None:
+#                    taskFile.fileFormat = fileFormat
+#                if fileType is not None:
+#                    taskFile.fileType = fileType
+
                 filename = uploadedFile.name
                 taskFile.taskFile.save(filename, uploadedFile)
                 taskFile.save()
@@ -76,13 +79,12 @@ def create(request, courseSessionId):
     else:
         form = TaskForm() # An unbound form
     
-
     form.fields['courseSession'].initial = courseSessionId
     form.fields['courseSession'].widget = HiddenInput()
     return render(request,
                   'task/create.html',
                   {'form':form, 'courseSession':courseSession,
-                   'course':course,
+                   'course':course, 'fileTypes':TaskFile.TYPE_CHOICES,
                    'shared':getShared(request)})
 
 def fileDownload(request, id, fileName):
@@ -92,7 +94,7 @@ def fileDownload(request, id, fileName):
     filePath = "task_file/task_file/" + str(id) + "/" + fileName
     taskFile = TaskFile.objects.get(task=task, taskFile=filePath)
 
-    if (not task.public or taskFile.isTestFile) and \
+    if (not task.public or taskFile.fileType == TaskFile.T_TEST) and \
             not userIsTeacher(request.user, task.courseSession):
         return redirect('webservice.views.course.read', id=course.id)
 
