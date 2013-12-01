@@ -54,6 +54,7 @@ urlpatterns = patterns('',
     (r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^login$',  'webservice.views.auth.login'),
+    url(r'^activate$',  'webservice.views.auth.activate'),
     url(r'^logout$', 'webservice.views.auth.logout'),
 
     url(r'^courses/$',                       'webservice.views.course.index'),

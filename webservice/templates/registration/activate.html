@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+{% if err %}
+<span class="alert">{{err}}</span>
+{% endif %}
+
+<form method="post" action="{% url 'webservice.views.auth.activate' %}">
+{% csrf_token %}
+<label for="username">{% trans 'Username' %}</label>
+<input id="username" name="username" type="text" value="{% if username %}{{username}}{% endif %}" />
+
+<label for="oldpassword" >{% trans 'Old password' %}</label>
+<input id="oldpassword" name="oldpassword" type="password" />
+
+<label for="password1">{% trans 'New password' %}</label>
+<input id="password1" name="password1" type="password" />
+
+<label for="password2">{% trans 'Repeat new password' %}</label>
+<input id="password2" name="password2" type="password" />
+</br>
+<input class="btn btn-primary" type="submit" value="{% trans 'Activate' %}" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+{% endblock %}
