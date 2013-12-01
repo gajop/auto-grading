@@ -110,9 +110,19 @@ $(function () {
     <h4>Files:</h4>
     <ul>
     {% for taskFile in taskFiles %}
-        <li>
-        <a href="{% url 'webservice.views.task.fileDownload' task.id taskFile.filename %}">{{taskFile.filename}} ({{taskFile.get_fileType_display}}) {% if taskFile.public %}(Public){% else %}(Private){% endif %}</a>
-        </li>
+        {% if taskFile.public or isTeacher %}
+            <li>
+            <a href="{% url 'webservice.views.task.fileDownload' task.id taskFile.filename %}">{{taskFile.filename}} 
+                {% if isTeacher %}
+                    {% if taskFile.fileType %}
+                        ({{taskFile.get_fileType_display}}) 
+                    {% endif %}
+                    {% if not taskFile.public %}
+                        ({% trans 'Hidden' %})
+                    {% endif %}
+                {% endif %}</a>
+            </li>
+        {% endif %}
     {% endfor %}
     </ul>
 {% endif %}

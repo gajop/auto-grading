@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% load bootstrap_toolkit %}
+{% load i18n %}
+
 {% block title %}{{course.name}}{% endblock %}
 
 {% block content %}
@@ -20,7 +23,7 @@
 {% for task in tasks %}
     {% if task.public or isTeacher %}
         <div class="span12">
-            <h4>{{forloop.counter}}. {{task.name}}</h4>
+            <h4>{{forloop.counter}}. {{task.name}}{% if isTeacher and not task.public %}({% trans 'Hidden' %}){% endif %}</h4>
             <p>{{task.description}}</p>
 
             <div class="row">

@@ -4,17 +4,13 @@ from django.shortcuts import  render, redirect
 from django.contrib.auth.models import User
 from webservice.models import Course, CourseSession, CourseSessionTeacher, Task
 from webservice.forms import CourseForm
-from webservice.views.shared import getShared
+from webservice.views.shared import getShared, userIsTeacher
 
 def index(request):
     print(request.LANGUAGE_CODE)
     layout = request.GET.get('layout')
     courses = []
     for v in Course.objects.all():
-#        try:
-#            v.image = EventImage.objects.get(event=v).image
-#        except EventImage.DoesNotExist:
-#            pass #oh well
         courses.append(v)
     return render(request,
                   'course/index.html',
@@ -47,13 +43,7 @@ def read(request, id):
     for v in Task.objects.filter(courseSession=currentCourseSession):
         tasks.append(v)
     
-    teachers = CourseSessionTeacher.objects.filter(courseSession=currentCourseSession)
-    teachers = [teacher.user for teacher in teachers]
-
-    if request.user in teachers:
-        isTeacher = True
-    else:
-        isTeacher = False
+    isTeacher = userIsTeacher(request.user, currentCourseSession)
 
     return render(request,
                   'course/read.html',

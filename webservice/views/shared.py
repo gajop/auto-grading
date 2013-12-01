@@ -1,5 +1,10 @@
 from django.core.urlresolvers import reverse
-from webservice.models import Course
+from webservice.models import Course, CourseSessionTeacher
+
+def userIsTeacher(user, courseSession):
+    teachers = CourseSessionTeacher.objects.filter(courseSession=courseSession)
+    teachers = [teacher.user for teacher in teachers]
+    return user in teachers
 
 def getShared(request):
     s = {

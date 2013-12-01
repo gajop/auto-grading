@@ -5,13 +5,8 @@ import json
 
 from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileFormat, FileFormat
 from webservice.forms import TaskForm, TaskFileForm
-from webservice.views.shared import getShared
+from webservice.views.shared import getShared, userIsTeacher
 from webservice.submit import processAnswer
-
-def userIsTeacher(user, courseSession):
-    teachers = CourseSessionTeacher.objects.filter(courseSession=courseSession)
-    teachers = [teacher.user for teacher in teachers]
-    return user in teachers
 
 def getFormErrors(form):
     return dict(form.error.items())
@@ -65,11 +60,6 @@ def create(request, courseSessionId):
                     publicFile = False
                 taskFile.public = publicFile
 
-#                if fileFormat is not None:
-#                    taskFile.fileFormat = fileFormat
-#                if fileType is not None:
-#                    taskFile.fileType = fileType
-
                 filename = uploadedFile.name
                 taskFile.taskFile.save(filename, uploadedFile)
                 taskFile.save()
@@ -115,11 +105,15 @@ def read(request, id):
         return redirect('webservice.views.course.index')
 
     task = Task.objects.get(id=id)
-    taskFiles = TaskFile.objects.filter(task=task)
     course = task.courseSession.course
+    isTeacher = userIsTeacher(request.user, task.courseSession)
+    if not task.public and not isTeacher:
+        return redirect('webservice.views.course.read', id=course.id)
+    taskFiles = TaskFile.objects.filter(task=task)
+
     return render(request,
                   'task/read.html',
-                  {'task':task, 'taskFiles':taskFiles, 'course':course, 
+                  {'task':task, 'taskFiles':taskFiles, 'course':course,'isTeacher':isTeacher,
                    'layout':layout, 'shared':getShared(request)})
 
 
