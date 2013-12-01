@@ -51,7 +51,7 @@ $(document).ready(function() {
                 {% endfor %}
 
                     <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{LANGUAGE_CODE|language_name}}</a>
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{LANGUAGE_CODE|language_name_local}}</a>
                         <ul class="dropdown-menu">
                             {% for lang in LANGUAGES %}
                                 <li><a id="{{lang.0}}" class="btn btn-link lang-btn" >{{lang.1}}</a></li>

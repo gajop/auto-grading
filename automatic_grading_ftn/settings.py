@@ -35,12 +35,12 @@ TIME_ZONE = 'Europe/Belgrade'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'sr-Latn'
+LANGUAGE_CODE = 'sr-latn'
 
 gettext = lambda s: s
 LANGUAGES = (
         ('en-us', gettext('English')),
-        ('sr-Latn', gettext('Serbian'))
+        ('sr-latn', gettext('Serbian'))
 )
 
 SITE_ID = 1
@@ -197,4 +197,3 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 LOGIN_REDIRECT_URL = 'webservice.views.course.index'
 #custom user: AUTH_USER_MODEL = 'customauth.MyUser'
-

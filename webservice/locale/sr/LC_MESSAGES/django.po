@@ -1,0 +1,99 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-01 18:50+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/base.html:71
+msgid "Logout"
+msgstr "Odjava"
+
+#: templates/base.html:78
+msgid "Login"
+msgstr "Prijava"
+
+#: templates/base.html:91 templates/course/index.html:5
+#: templates/course/index.html.py:10
+msgid "Courses"
+msgstr "Predmeti"
+
+#: templates/course/index.html:18 templates/course/read.html:31
+msgid "More"
+msgstr "Detalji"
+
+#: templates/course/index.html:25
+msgid "Add course"
+msgstr "Dodavanje predmeta"
+
+#: templates/course/read.html:15
+msgid "Tasks"
+msgstr "Zadaci"
+
+#: templates/course/read.html:19
+msgid "Add task"
+msgstr "Dodavanje zadatka"
+
+#: templates/course/read.html:26 templates/task/read.html:133
+msgid "Hidden"
+msgstr "Sakriveno"
+
+#: templates/course/read.html:35
+msgid "Delete"
+msgstr "Brisanje"
+
+#: templates/task/create.html:126 templates/task/read.html:150
+msgid "Add files"
+msgstr "Dodavanje datoteka"
+
+#: templates/task/create.html:132 templates/task/read.html:156
+msgid "Name"
+msgstr "Ime"
+
+#: templates/task/create.html:133
+msgid "Format"
+msgstr "Format"
+
+#: templates/task/create.html:134
+msgid "Type"
+msgstr "Tip"
+
+#: templates/task/create.html:135
+msgid "Public"
+msgstr "Javno"
+
+#: templates/task/read.html:142
+msgid "Submit answer"
+msgstr "Pošalji odgovor"
+
+#: templates/task/read.html:148
+msgid "Files"
+msgstr "Datoteke"
+
+#: templates/task/read.html:164
+msgid "Submit"
+msgstr "Slanje"
+
+#: templates/task/read.html:170
+msgid "Results"
+msgstr "Rezultati"
+
+#: templates/task/read.html:175
+msgid "Message"
+msgstr "Poruka"
+
+#: templates/task/read.html:176
+msgid "Success"
+msgstr "Uspešno"

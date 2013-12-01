@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Courses{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans 'Courses' %}{% endblock %}
 
 {% block content %}
 
 <div class="well">
-    <h3>Courses</h3>
+    <h3>{% trans 'Courses' %}</h3>
 </div>
 
 <div class="row">
@@ -13,13 +15,13 @@
     <div class="span10">
         <h4>{{ course.name }}</h4>
         <p>{{ course.description }}</p>
-        <a class="btn" href="{% url 'webservice.views.course.read' course.id %}">More&raquo;</a>
+        <a class="btn" href="{% url 'webservice.views.course.read' course.id %}">{% trans 'More' %}&raquo;</a>
     </div>
 {% endfor %}
 </div>
 </br>
 {% if user.is_superuser %}
 <!-- TODO: instead check if user has permission to add courses -->
-<a class="btn btn-success" href="{% url 'webservice.views.course.create' %}">Add course</a>
+<a class="btn btn-success" href="{% url 'webservice.views.course.create' %}">{% trans 'Add course' %}</a>
 {% endif %}
 {% endblock %}
