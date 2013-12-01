@@ -13,20 +13,20 @@
   pk: 2
 
 - fields: {name: "Matlab", extension: ".m"}
-  model: webservice.FileType
+  model: webservice.FileFormat
   pk: 1
 - fields: {name: "Python", extension: ".py"}
-  model: webservice.FileType
+  model: webservice.FileFormat
   pk: 2
 - fields: {name: "Java", extension: ".java"}
-  model: webservice.FileType
+  model: webservice.FileFormat
   pk: 3
 
-- fields: {course: 1, fileType: 1}
-  model: webservice.CourseFileType
+- fields: {course: 1, fileFormat: 1}
+  model: webservice.CourseFileFormat
   pk: 1
-- fields: {course: 2, fileType: 1}
-  model: webservice.CourseFileType
+- fields: {course: 2, fileFormat: 1}
+  model: webservice.CourseFileFormat
   pk: 2
 
 - fields: {course: 1, endDate: 2014-01-31, finished: false, startDate: 2013-10-14}

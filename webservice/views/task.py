@@ -3,7 +3,7 @@ from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect, HttpResponse
 import json
 
-from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileType, FileType
+from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileFormat, FileFormat
 from webservice.forms import TaskForm, TaskFileForm
 from webservice.views.shared import getShared
 from webservice.submit import processAnswer
@@ -50,17 +50,17 @@ def create(request, courseSessionId):
                 else:
                     isTestFile = False
 
-                fileTypeName = 'form-' + str(i) + 'fileType'
+                fileFormatName = 'form-' + str(i) + 'fileFormat'
 
-                fileType = None
-                if fileTypeName in request.POST:
-                    fileTypeID = int(request.POST[fileTypeName])
-                    if fileTypeID != -1:
-                        fileType = FileType.objects.get(pk=fileTypeID)
+                fileFormat = None
+                if fileFormatName in request.POST:
+                    fileFormatID = int(request.POST[fileFormatName])
+                    if fileFormatID != -1:
+                        fileFormat = FileFormat.objects.get(pk=fileFormatID)
 
                 taskFile = TaskFile(task=task, isTestFile=isTestFile)
-                if fileType is not None:
-                    taskFile.fileType = fileType
+                if fileFormat is not None:
+                    taskFile.fileFormat = fileFormat
                 filename = uploadedFile.name
                 taskFile.taskFile.save(filename, uploadedFile)
                 taskFile.save()

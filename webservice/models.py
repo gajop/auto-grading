@@ -20,7 +20,7 @@ def groupFilesForTask(className, dir, instance, fileName):
     return os.sep.join([parentFolder, fileName])
 
 
-class FileType(models.Model):
+class FileFormat(models.Model):
     name = models.CharField(max_length=100)
     extension = models.CharField(max_length=10)
     def __unicode__(self):
@@ -42,11 +42,11 @@ class Course(models.Model):
     def __unicode__(self):
         return self.name
 
-class CourseFileType(models.Model):
-    course = models.ForeignKey(Course, related_name="fileTypes")
-    fileType = models.ForeignKey(FileType)
+class CourseFileFormat(models.Model):
+    course = models.ForeignKey(Course, related_name="fileFormats")
+    fileFormat = models.ForeignKey(FileFormat)
     def __unicode__(self):
-        return self.course + " : " + self.fileType
+        return self.course + " : " + self.fileFormat
 
 class Student(models.Model):
     user = models.OneToOneField(User)
@@ -95,7 +95,7 @@ class TaskFile(models.Model):
     task = models.ForeignKey(Task)
     taskFile = models.FileField(blank=False, null=False, upload_to=partial(groupFilesForTask, "task_file", "task_file"))
     isTestFile = models.BooleanField(default=False, blank=True)
-    fileType = models.ForeignKey(FileType, null=True) # null means file type isn't specified
+    fileFormat = models.ForeignKey(FileFormat, null=True)
     def __unicode__(self):
         return unicode(self.task) + " " + unicode(self.taskFile.name) + " Test: " + unicode(self.isTestFile)
     def filename(self):

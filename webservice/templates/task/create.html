@@ -48,9 +48,9 @@ $(function () {
                 var newFileDiv = '<tr id="tr'+ id +'">';
                 newFileDiv    += '<input type="hidden" value="' + file.name + '" name="form-' + id + 'taskFile"/>';
                 newFileDiv    += '<td>' + file.name + '<span id="removeFile' + id + '" class="btn btn-link btn-mini removeFile"> <i class="icon-remove-circle"/></span> </td>';            
-                newFileDiv    += '<td><select name="form-' + id + 'fileType">';
-                {% for courseFileType in course.fileTypes.all %}
-                newFileDiv    += '<option value={{courseFileType.fileType.id}}>{{courseFileType.fileType.name}} </option>';
+                newFileDiv    += '<td><select name="form-' + id + 'fileFormat">';
+                {% for courseFileFormat in course.fileFormats.all %}
+                newFileDiv    += '<option value={{courseFileFormat.fileFormat.id}}>{{courseFileFormat.fileFormat.name}} </option>';
                 {% endfor %}
                 newFileDiv    += '<option value=-1>Unspecified</option>';
                 newFileDiv    += '</select></td>';
@@ -79,7 +79,7 @@ $(function () {
             var index = filesArray.push(value) - 1;
             $('input[name=form-' + key + 'taskFile]').attr('name', 'form-' + index + 'taskFile');
             $('input[name=form-' + key + 'isTestFile]').attr('name', 'form-' + index + 'isTestFile');
-            $('select[name=form-' + key + 'fileType]').attr('name', 'form-' + index + 'fileType');
+            $('select[name=form-' + key + 'fileFormat]').attr('name', 'form-' + index + 'fileFormat');
         });
         $("#fileupload").fileupload('send', {files:filesArray});
         event.preventDefault();
