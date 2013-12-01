@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth.models import User, Group
 
 from rest_framework import viewsets, routers
-from webservice.models import Department, Course, Student, \
+from webservice.models import Department, Course,  \
         Task, TaskFile, CourseSession, StudentEnrollment, \
         SubmitRequest, StudentAnswerFile, StudentAnswerTestResult, StudentAnswer
 
@@ -15,8 +15,6 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     model = Department
 class CourseViewSet(viewsets.ModelViewSet):
     model = Course
-class StudentViewSet(viewsets.ModelViewSet):
-    model = Student
 #semester dynamic models
 class CourseSessionViewSet(viewsets.ModelViewSet):
     model = CourseSession
@@ -39,7 +37,6 @@ class StudentAnswerFileViewSet(viewsets.ModelViewSet):
 router = routers.DefaultRouter()
 router.register(r'departments', DepartmentViewSet)
 router.register(r'courses', CourseViewSet)
-router.register(r'students', StudentViewSet)
 
 router.register(r'courseSessions', CourseSessionViewSet)
 router.register(r'studentEnrollments', StudentEnrollmentViewSet)

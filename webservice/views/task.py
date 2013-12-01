@@ -24,7 +24,7 @@ def submitAnswer(request, id):
         for i, uploadedFile in enumerate(request.FILES.getlist('files[]')):
             filename = uploadedFile.name            
             files.append((filename, uploadedFile))
-        result = processAnswer(task, request.user.student, files)
+        result = processAnswer(task, request.user, files)
         if request.is_ajax():
             data = {"success":True, "result":result}
             return HttpResponse(json.dumps(data), content_type="application/json")

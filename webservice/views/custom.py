@@ -8,8 +8,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files import File
 
-from webservice.models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, \
-        Task, TaskFile, Student
+from webservice.models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, Task, TaskFile
 
 from automatic_grading_ftn import settings
 from webservice.matlab import invoker
@@ -69,10 +68,11 @@ def submit_answer(request):
         task = Task.objects.get(pk = taskID)
         departmentFromTask = task.courseSession.course.department
         try:
-            student = Student.objects.get(studentID = studentIndex)
-        except Student.DoesNotExist:
+            student = User.objects.get(username = studentIndex)
+        except User.DoesNotExist:
             submitMessage.append("Student sa indeksom \"" + str(studentIndex) + "\" nije ubeležen do sada.")
-            student = Student(studentID = studentIndex, department = departmentFromTask)
+            #FIXME: user has no department field
+            student = User(username = studentIndex, department = departmentFromTask)
 
             student.save()
         studentAnswer = StudentAnswer(student = student, task = task, submitRequest = submitRequest)

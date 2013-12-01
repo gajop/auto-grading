@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Textarea
 
-from webservice.models import Department, Course, Student, \
+from webservice.models import Department, Course, \
         Task, TaskFile, CourseSession, StudentEnrollment, \
         SubmitRequest, StudentAnswerFile, StudentAnswerTestResult, StudentAnswer
 

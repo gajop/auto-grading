@@ -48,15 +48,6 @@ class CourseFileFormat(models.Model):
     def __unicode__(self):
         return self.course + " : " + self.fileFormat
 
-class Student(models.Model):
-    user = models.OneToOneField(User)
-    studentID = models.CharField(max_length=50)
-    firstName = models.CharField(blank=True, max_length=100)
-    lastName = models.CharField(blank=True, max_length=100)
-    department = models.ForeignKey(Department)
-    def __unicode__(self):
-        return self.studentID + ", " + self.firstName + " " + self.lastName
-
 #dynamic semester (frequency)
 class CourseSession(models.Model):
     startDate = models.DateField(default=datetime.now, blank=True)
@@ -74,7 +65,7 @@ class CourseSessionTeacher(models.Model):
 
 class StudentEnrollment(models.Model):
     startDate = models.DateField(default=datetime.now, blank=True)
-    student = models.ForeignKey(Student)
+    student = models.ForeignKey(User)
     courseSession = models.ForeignKey(CourseSession)
     finished = models.BooleanField(default=False, blank=True)
     def __unicode__(self):
@@ -117,7 +108,7 @@ class SubmitRequest(models.Model):
 
 class StudentAnswer(models.Model):
     task = models.ForeignKey(Task)
-    student = models.ForeignKey(Student)
+    student = models.ForeignKey(User)
     submitRequest = models.ForeignKey(SubmitRequest, blank=True, null=True)
     def __unicode__(self):
         return unicode(self.student) + " " + unicode(self.task)
