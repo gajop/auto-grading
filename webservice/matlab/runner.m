@@ -1,8 +1,10 @@
-%correctPath = '';
-%submittedPath = '';
+%these values are assigned on script invocation
+%correctPath = ''; %path to the correct implementation
+%submittedPath = ''; %path to the user implementation
+%tests = ''; %test function names used in assertaining code correctness
 
 addpath(correctPath);
-ts = tests();
+ts = feval(tests);
 correctReturns = {};
 for i = 1:length(ts)
     t = ts{i};

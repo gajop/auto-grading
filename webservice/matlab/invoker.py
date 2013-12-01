@@ -4,12 +4,13 @@ import os.path
 
 scriptPath = os.path.realpath(__file__)
 
-def doTest(correctPath, submittedPath):
+def doTest(correctPath, submittedPath, tests):
+    tests = tests.rstrip('.m')
     output = subprocess.call(["octave", "--eval", \
-        "correctPath = '{0}'; submittedPath = '{1}';".format(correctPath, submittedPath),
+        "correctPath = '{0}'; submittedPath = '{1}'; tests='{2}'".format(correctPath, submittedPath, tests),
         os.path.join(os.path.dirname(scriptPath), "runner.m")])
     output = subprocess.check_output(["octave", "--eval", \
-        "correctPath = '{0}'; submittedPath = '{1}';".format(correctPath, submittedPath),
+        "correctPath = '{0}'; submittedPath = '{1}'; tests='{2}'".format(correctPath, submittedPath, tests),
         os.path.join(os.path.dirname(scriptPath), "runner.m")])
 
     lines = []
@@ -37,8 +38,3 @@ def doTest(correctPath, submittedPath):
         elif "tačan" in line:
             result["testResults"].append({"success":True, "msg":line})
     return result
-
-if __name__ == "__main__":
-    correctPath = "/home/gajop/automatic-grading-ftn/uploads/task_file/task_file/1"
-    submittedPath = "/home/gajop/automatic-grading-ftn/uploads/student_answer_file/answer_file/1"
-    print(doTest(correctPath, submittedPath))

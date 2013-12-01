@@ -21,10 +21,17 @@ def processAnswer(task, student, files):
 
     taskFile = TaskFile.objects.filter(task = task)[0]
     taskFolder = os.path.abspath(os.path.join(settings.MEDIA_ROOT, taskFile.taskFile.url, os.pardir))
-    result = invoker.doTest(taskFolder, studentAnswerFolder)
 
-    for testResultDict in result["testResults"]:
+    results = {"success":True, "testResults":[]}
+    for testTaskFile in TaskFile.objects.filter(task=task, fileType=TaskFile.T_TEST):
+        result = invoker.doTest(taskFolder, studentAnswerFolder, testTaskFile.filename())
+        if result["success"] != "success":
+            results["success"] = False
+        results["testResults"].extend(result["testResults"])
+
+
+    for testResultDict in results["testResults"]:
         testResult = StudentAnswerTestResult(studentAnswer = studentAnswer, success = testResultDict["success"], resultText = "")
         testResult.save()
 
-    return result
+    return results
