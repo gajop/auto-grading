@@ -110,7 +110,7 @@ class SubmitRequest(models.Model):
 class StudentAnswer(models.Model):
     task = models.ForeignKey(Task)
     student = models.ForeignKey(Student)
-    submitRequest = models.ForeignKey(SubmitRequest)
+    submitRequest = models.ForeignKey(SubmitRequest, blank=True, null=True)
     def __unicode__(self):
         return unicode(self.student) + " " + unicode(self.task)
 

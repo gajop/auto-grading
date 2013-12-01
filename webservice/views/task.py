@@ -6,6 +6,7 @@ import json
 from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileType, FileType
 from webservice.forms import TaskForm, TaskFileForm
 from webservice.views.shared import getShared
+from webservice.submit import processAnswer
 
 def userIsTeacher(user, courseSession):
     teachers = CourseSessionTeacher.objects.filter(courseSession=courseSession)
@@ -16,19 +17,16 @@ def getFormErrors(form):
     return dict(form.error.items())
 
 def submitAnswer(request, id):
+    task = Task.objects.get(id=id)
     if request.method == 'POST':
+        #list of tuples (filename, file)
+        files = []
         for i, uploadedFile in enumerate(request.FILES.getlist('files[]')):
-            print(i)
-            """
-            taskFile = TaskFile(task=task, isTestFile=isTestFile)
-            if fileType is not None:
-                taskFile.fileType = fileType
-            filename = uploadedFile.name
-            taskFile.taskFile.save(filename, uploadedFile)
-            taskFile.save()
-            """
+            filename = uploadedFile.name            
+            files.append((filename, uploadedFile))
+        result = processAnswer(task, request.user.student, files)
         if request.is_ajax():
-            data = {"success":True} 
+            data = {"success":True, "result":result}
             return HttpResponse(json.dumps(data), content_type="application/json")
 
     return redirect('webservice.views.task.read', id=id)

@@ -16,9 +16,7 @@
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <script>
 $(function () {
-    {% comment %} hack needed so .send gets triggered even if there are no files {% endcomment %}
     window.allFiles = new Object();
-    window.allFiles[-1] = '';
     fileIdLast = -1;
     $('#fileupload').fileupload({
         dataType: 'json',
@@ -26,7 +24,29 @@ $(function () {
             $("#submitBtn").prop('disabled', false);
             result = data.result;
             if (result.success) {
-                //$(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
+                $("#resultDiv").show();
+
+                $('tr[class*=result]').remove();
+                if (result.result.success) {
+                    cls = 'success';
+                } else {
+                    cls = 'error';
+                }
+                //$('#resultDiv').attr('class', cls);
+                $.each(result.result.testResults, function(i, testResult) {
+                    if (testResult.success) {
+                        cls = 'success';
+                    } else {
+                        cls = 'error';
+                    }
+                    var resultTr = '<tr class="result ' + cls + '">';
+                    resultTr    += '<td>' + (i + 1) + '</td>';
+                    resultTr    += '<td>' + testResult.msg + '</td>';
+                    resultTr    += '<td>' + testResult.success + '</td>';
+                    resultTr    += '</tr>';
+                    
+                    $("#results").append(resultTr);
+                });
             } else {
                 $.each(result.errors, function(i, val) {
                     id = val[0];
@@ -46,34 +66,34 @@ $(function () {
                 fileIdLast++;
                 window.allFiles[fileIdLast] = file;
                 var id = fileIdLast;
-                var newFileDiv = '<tr id="tr'+ id +'">';
-                newFileDiv    += '<input type="hidden" value="' + file.name + '" name="form-' + id + 'answerFile"/>';
-                newFileDiv    += '<td>' + file.name + '<span id="removeFile' + id + '" class="btn btn-link btn-mini removeFile"> <i class="icon-remove-circle"/></span> </td>';            
-                newFileDiv    += '</tr>';
+                var newFileTr = '<tr id="tr'+ id +'">';
+                newFileTr    += '<input type="hidden" value="' + file.name + '" name="form-' + id + 'answerFile"/>';
+                newFileTr    += '<td>' + file.name + '<span id="removeFile' + id + '" class="btn btn-link btn-mini removeFile"> <i class="icon-remove-circle"/></span> </td>';            
+                newFileTr    += '</tr>';
                 
-                $("#answerFiles").append(newFileDiv);
+                $("#answerFiles").append(newFileTr);
 
                 $("#removeFile"+id).on("click", function() {
                     delete window.allFiles[id];
                     $("#tr"+id).remove();
                 });
 
-                $(".table").show();
+                $("#fileTable").show();
             });
         }
     });
 
     $("#answerForm").submit(function(e) {
-        $("#submitBtn").prop('disabled', true);
-        $("span.error").remove();
-        $(".error").removeClass("error");
         var filesArray = [];
         $.each(window.allFiles, function(key, value) {
             console.log(key, value)
             var index = filesArray.push(value) - 1;
             $('input[name=form-' + key + 'answerFile]').attr('name', 'form-' + index + 'answerFile');
         });
-        $("#fileupload").fileupload('send', {files:filesArray});
+        if (filesArray.length > 0) {
+            $("#submitBtn").prop('disabled', true);
+            $("#fileupload").fileupload('send', {files:filesArray});
+        }
         event.preventDefault();
     });
 });
@@ -108,7 +128,7 @@ $(function () {
         <span>{% trans 'Add files' %}...</span>
         <input type="file" id="fileupload" name="files[]" data-url="{% url 'webservice.views.task.submitAnswer' task.id %}" multiple>
     </span>
-    <table class="table" hidden>
+    <table class="table" id="fileTable" hidden>
         <thead>
             <tr>
                 <th>{% trans 'Name' %}</th>
@@ -122,4 +142,20 @@ $(function () {
     <input type="submit" id="submitBtn" class="btn btn-primary" />
 
 </form>
+
+<div id="resultDiv" hidden>
+    <hr/>
+    <h4>Results</h4>
+    <table class="table" id="resultTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Message' %}</th>
+                <th>{% trans 'Success' %}</th>
+            </tr>
+        </thead>
+        <tbody id="results">
+        </tbody>
+    </table>
+</div>
 {% endblock %}

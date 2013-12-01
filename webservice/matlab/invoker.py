@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import subprocess
 import os.path
 
@@ -21,7 +22,21 @@ def doTest(correctPath, submittedPath):
             startPrint = False
         elif startPrint:
             lines.append(line)
-    return "\n".join(lines)
+    
+    resultStr = "\n".join(lines)
+    result = {"success":False, "testResults":[]};    
+    for i, line in enumerate(resultStr.split("\n")):
+        if "Zadatak netačan" in line:
+            result["success"] = False
+            #submitMessage.append(line)
+        elif "Zadatak tačan" in line:
+            result["success"] = True
+            #submitMessage.append(line)
+        elif "netačan" in line:
+            result["testResults"].append({"success":False, "msg":line})
+        elif "tačan" in line:
+            result["testResults"].append({"success":True, "msg":line})
+    return result
 
 if __name__ == "__main__":
     correctPath = "/home/gajop/automatic-grading-ftn/uploads/task_file/task_file/1"
