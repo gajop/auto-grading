@@ -110,6 +110,8 @@ def read(request, id):
     if not task.public and not isTeacher:
         return redirect('webservice.views.course.read', id=course.id)
     taskFiles = TaskFile.objects.filter(task=task)
+    if not isTeacher:
+        taskFiles = taskFiles.filter(public = True)
 
     return render(request,
                   'task/read.html',

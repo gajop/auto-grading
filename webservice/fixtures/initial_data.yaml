@@ -5,10 +5,10 @@
   model: webservice.department
   pk: 2
 
-- fields: {description: 'Razumevanje osnovnih numeričkih metoda i sposobnost njihove primena u rešavanju jednostavnijih inženjerskih zadataka korišćenjem numeričkih softverskih alata.', name: "Numeri\u010Dki algoritmi i numeri\u010Dki softver u in\u017Eenjerstvu", shortName: NANSI, department: 1}
+- fields: {description: 'Zadaci za vežbu iz Numerike. Napomena: Ovaj sajt je isključivo za vežbu, i ne garantuje tačnost postavljenih rešenja.', name: "Numeri\u010Dki algoritmi i numeri\u010Dki softver u in\u017Eenjerstvu", shortName: NANSI, department: 1}
   model: webservice.course
   pk: 1
-- fields: {description: 'Razumevanje osnovnih numeričkih metoda i sposobnost njihove primena u rešavanju jednostavnijih inženjerskih zadataka korišćenjem numeričkih softverskih alata.', name: "Numeri\u010Dke metode", shortName: NM, department: 2}
+- fields: {description: 'Zadaci za vežbu iz Numerike. Napomena: Ovaj sajt je isključivo za vežbu, i ne garantuje tačnost postavljenih rešenja.', name: "Numeri\u010Dke metode", shortName: NM, department: 2}
   model: webservice.course
   pk: 2
 

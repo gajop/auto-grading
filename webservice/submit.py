@@ -29,6 +29,8 @@ def processAnswer(task, student, files):
             results["success"] = False
         results["testResults"].extend(result["testResults"])
 
+    studentAnswer.success = result["success"]
+    studentAnswer.save()
 
     for testResultDict in results["testResults"]:
         testResult = StudentAnswerTestResult(studentAnswer = studentAnswer, success = testResultDict["success"], resultText = "")

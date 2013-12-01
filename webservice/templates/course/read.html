@@ -19,27 +19,26 @@
 <a class="btn btn-success" href="{% url 'webservice.views.task.create' currentCourseSession.id %}">{% trans 'Add task' %}</a>
 {% endif %}
 
-<div class="row">
+<table class="table tasks">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>{% trans 'Name' %}</td>
+    </thead>
+    <tbody>
 {% for task in tasks %}
-    {% if task.public or isTeacher %}
-        <div class="span12">
-            <h4>{{forloop.counter}}. {{task.name}}{% if isTeacher and not task.public %}({% trans 'Hidden' %}){% endif %}</h4>
-            <p>{{task.description}}</p>
-
-            <div class="row">
-                <div class="span1">
-                    <a class="btn" href="{% url 'webservice.views.task.read' task.id%}">{% trans 'More' %}&raquo;</a>
-                </div>
-            {% if isTeacher %}
-                <div class="span1">
-                    <a class="btn btn-danger" href="{% url 'webservice.views.task.delete' task.id%}">{% trans 'Delete' %}</a>
-                </div>
+    <tr {% if task.success %} class="success" {% elif task.attempt %} class="warning" {% endif %}>
+        <td>{{forloop.counter}}</td>
+        <td>
+            <a href="{% url 'webservice.views.task.read' task.id%}"> {{task.name}}{% if isTeacher and not task.public %}({% trans 'Hidden' %}){% endif %}</a>
+            {% if isTeacher %}                
+                    <a class="btn btn-danger pull-right" href="{% url 'webservice.views.task.delete' task.id%}">{% trans 'Delete' %}</a>
             {% endif %}
-            </div>
-
-        </div>
-    {% endif %}
+        </td>
+    </tr>
 {% endfor %}
+    </tbody>
+</table>
 </div>
 
 {% endblock %}

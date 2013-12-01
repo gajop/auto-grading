@@ -2,12 +2,11 @@ from django.forms.models import modelformset_factory
 from django.db.models import Max
 from django.shortcuts import  render, redirect
 from django.contrib.auth.models import User
-from webservice.models import Course, CourseSession, CourseSessionTeacher, Task
+from webservice.models import Course, CourseSession, CourseSessionTeacher, Task, StudentAnswer
 from webservice.forms import CourseForm
 from webservice.views.shared import getShared, userIsTeacher
 
 def index(request):
-    print(request.LANGUAGE_CODE)
     layout = request.GET.get('layout')
     courses = []
     for v in Course.objects.all():
@@ -17,6 +16,8 @@ def index(request):
                   {'courses': courses, 'layout': layout, 'shared':getShared(request)} )
 
 def create(request):
+    if not request.user.is_superuser:
+        return redirect('webservice.views.course.index')
     layout = request.GET.get('layout', 'horizontal')
     if request.method == 'POST':
         form = CourseForm(request.POST, request.FILES)
@@ -39,11 +40,24 @@ def read(request, id):
     courseSessions = CourseSession.objects.filter(course=course, finished=False).order_by('startDate')
     currentCourseSession = courseSessions[0]
 
-    tasks = []
-    for v in Task.objects.filter(courseSession=currentCourseSession):
-        tasks.append(v)
-    
     isTeacher = userIsTeacher(request.user, currentCourseSession)
+    tasks = Task.objects.filter(courseSession=currentCourseSession)
+    if not isTeacher:
+        tasks = tasks.filter(public = True)
+
+    #TODO: this could be too slow, revise maybe?
+    studentAnswers = StudentAnswer.objects.filter(student = request.user)
+    for task in tasks:
+        task.success = False
+        task.attempt = False
+        correctAnswers = studentAnswers.filter(task=task, success=True)
+        if correctAnswers.count() > 0:
+            task.success = True
+            task.attempt = True
+        else:
+            falseAnswers = studentAnswers.filter(task=task, success=False)
+            if falseAnswers.count() > 0:
+                task.attempt = True
 
     return render(request,
                   'course/read.html',
@@ -53,6 +67,8 @@ def read(request, id):
 
 
 def update(request, id):
+    if not request.user.is_superuser:
+        return redirect('webservice.views.course.index')
     layout = request.GET.get('layout')
     if not Course.objects.filter(id=id).exists():
         return redirect('webservice.views.course.index')
@@ -71,6 +87,8 @@ def update(request, id):
                   {'Course' : course, 'layout': layout, 'form': form, 'shared':getShared(request)} )
 
 def delete(request, id):
+    if not request.user.is_superuser:
+        return redirect('webservice.views.course.index')
     layout = request.GET.get('layout')
     if not Course.objects.filter(id=id).exists():
         return redirect('webservice.views.course.index')

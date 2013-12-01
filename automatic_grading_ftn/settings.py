@@ -37,10 +37,11 @@ TIME_ZONE = 'Europe/Belgrade'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'sr-latn'
 
-gettext = lambda s: s
+from django.utils.translation import ugettext_lazy as _
+
 LANGUAGES = (
-        ('en-us', gettext('English')),
-        ('sr-latn', gettext('Serbian'))
+        ('en-us', 'English'),
+        ('sr-latn', 'Serbian'),
 )
 
 SITE_ID = 1

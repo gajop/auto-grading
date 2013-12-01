@@ -56,7 +56,7 @@ msgstr "Brisanje"
 
 #: templates/task/create.html:126 templates/task/read.html:150
 msgid "Add files"
-msgstr "Dodavanje datoteka"
+msgstr "Dodaj fajlove"
 
 #: templates/task/create.html:132 templates/task/read.html:156
 msgid "Name"
@@ -76,11 +76,11 @@ msgstr "Javno"
 
 #: templates/task/read.html:142
 msgid "Submit answer"
-msgstr "Pošalji odgovor"
+msgstr "Slanje rešenja"
 
 #: templates/task/read.html:148
 msgid "Files"
-msgstr "Datoteke"
+msgstr "Fajlovi"
 
 #: templates/task/read.html:164
 msgid "Submit"

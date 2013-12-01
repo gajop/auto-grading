@@ -20,8 +20,8 @@
 {% endfor %}
 </div>
 </br>
+{% comment %} TODO: instead check if user has permission to add courses --> {% endcomment %}
 {% if user.is_superuser %}
-<!-- TODO: instead check if user has permission to add courses -->
 <a class="btn btn-success" href="{% url 'webservice.views.course.create' %}">{% trans 'Add course' %}</a>
 {% endif %}
 {% endblock %}

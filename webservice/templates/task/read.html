@@ -119,22 +119,20 @@ $(function () {
 </div
 >
 {% if taskFiles %}
-    <h4>Files:</h4>
+    <h4>{% trans 'Files' %}:</h4>
     <ul>
     {% for taskFile in taskFiles %}
-        {% if taskFile.public or isTeacher %}
-            <li>
-            <a href="{% url 'webservice.views.task.fileDownload' task.id taskFile.filename %}">{{taskFile.filename}} 
-                {% if isTeacher %}
-                    {% if taskFile.fileType %}
-                        ({{taskFile.get_fileType_display}}) 
-                    {% endif %}
-                    {% if not taskFile.public %}
-                        ({% trans 'Hidden' %})
-                    {% endif %}
-                {% endif %}</a>
-            </li>
-        {% endif %}
+        <li>
+        <a href="{% url 'webservice.views.task.fileDownload' task.id taskFile.filename %}">{{taskFile.filename}} 
+            {% if isTeacher %}
+                {% if taskFile.fileType %}
+                    ({{taskFile.get_fileType_display}}) 
+                {% endif %}
+                {% if not taskFile.public %}
+                    ({% trans 'Hidden' %})
+                {% endif %}
+            {% endif %}</a>
+        </li>
     {% endfor %}
     </ul>
 {% endif %}
@@ -145,7 +143,6 @@ $(function () {
 
     {% csrf_token %}
     <hr/>
-    <h4>{% trans 'Files' %}</h4>
     <span class="btn btn-success fileinput-button">
         <span>{% trans 'Add files' %}...</span>
         <input type="file" id="fileupload" name="files[]" data-url="{% url 'webservice.views.task.submitAnswer' task.id %}" multiple>
@@ -161,7 +158,7 @@ $(function () {
     </table>
 
     <hr/>
-    <input value="{% trans 'Submit' %}" type="submit" id="submitBtn" class="btn btn-primary" />
+    <input value="{% trans 'Check' %}" type="submit" id="submitBtn" class="btn btn-primary" />
     <img id="loaderGif" hidden src="{% static "gif/ajax-loader.gif" %}"/>
 </form>
 
