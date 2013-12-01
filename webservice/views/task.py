@@ -58,6 +58,12 @@ def create(request, courseSessionId):
                 if fileTypeID != -1:
                     taskFile.fileType = fileTypeID
 
+                publicFileName = 'form-' + str(i) + 'publicFile'
+                if publicFileName in request.POST and request.POST[publicFileName] == 'on':
+                    publicFile = True
+                else:
+                    publicFile = False
+                taskFile.public = publicFile
 
 #                if fileFormat is not None:
 #                    taskFile.fileFormat = fileFormat

@@ -60,13 +60,14 @@ $(function () {
                 newFileDiv    += '</select></td>';
 
 
-                newFileDiv    += '<td><select name="form-' + id + 'fileType">';
+                newFileDiv    += '<td><select id="form-' + id + 'fileType" name="form-' + id + 'fileType">';
                 {% for id, name in fileTypes %}
                     newFileDiv    += '<option value={{id}}>{{name}}</option>';
                 {% endfor %}
                 newFileDiv    += '<option value=-1>Other</option>';
                 newFileDiv    += '</select></td>';
-
+                
+                newFileDiv    += '<td><input type="checkbox" name="form-' + id + 'publicFile"/></td>';
                 newFileDiv    += '</tr>';
                 
                 $("#taskFiles").append(newFileDiv);
@@ -74,6 +75,14 @@ $(function () {
                 $("#removeFile"+id).on("click", function() {
                     delete window.allFiles[id];
                     $("#tr"+id).remove();
+                });
+
+                $('#form-' + id + 'fileType').change(function() {
+                    if (this.value > 0) { //test or implementation
+                        $('input[name=form-' + id + 'publicFile]').prop("checked", false);
+                    } else {
+                        $('input[name=form-' + id + 'publicFile]').prop("checked", true);
+                    }
                 });
 
                 $(".table").show();
@@ -92,6 +101,7 @@ $(function () {
             $('input[name=form-' + key + 'taskFile]').attr('name', 'form-' + index + 'taskFile');
             $('select[name=form-' + key + 'fileFormat]').attr('name', 'form-' + index + 'fileFormat');
             $('select[name=form-' + key + 'fileType]').attr('name', 'form-' + index + 'fileType');
+            $('input[name=form-' + key + 'publicFile]').attr('name', 'form-' + index + 'publicFile');
         });
         $("#fileupload").fileupload('send', {files:filesArray});
         event.preventDefault();
@@ -121,6 +131,7 @@ $(function () {
                 <th>{% trans 'Name' %}</th>
                 <th>{% trans 'Format' %}</th>
                 <th>{% trans 'Type' %}</th>
+                <th>{% trans 'Public' %}</th>
             </tr>
         </thead>
         <tbody id="taskFiles">
