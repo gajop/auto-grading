@@ -53,3 +53,6 @@ sudo gpasswd -a ${USERNAME} docker
 
 # Restart the docker daemon.
 sudo service docker restart
+
+8. Build 'grading', a docker image (run from webservice/docker/container)
+docker build -t grading .

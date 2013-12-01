@@ -3,7 +3,7 @@ import os
 from automatic_grading_ftn import settings
 
 from webservice.models import Task, TaskFile, StudentAnswer, StudentAnswerTestResult, StudentAnswerFile
-from webservice.matlab import invoker
+from webservice.docker import invoker
 
 #files is a tuple of (filename, file)
 def processAnswer(task, student, files):
