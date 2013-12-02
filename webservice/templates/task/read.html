@@ -137,7 +137,7 @@ $(function () {
     </ul>
 {% endif %}
 
-{% if user.is_authenticated %}
+{% if enrolled %}
 <h3>{% trans 'Submit answer' %}</h3>
 
 <form class="form" id="answerForm" enctype="multipart/form-data">
@@ -177,8 +177,10 @@ $(function () {
         <tbody id="results">
         </tbody>
     </table>
-</div>
-{% else %} {% comment %} user.is_authenticated{% endcomment %}
+</div> {% comment %} if not enrolled {% endcomment %}
+{% elif user.is_authenticated  %}
+<div class="alert">{% trans 'You must be enrolled in this course to submit solutions.' %}</div>
+{% else %} 
 <div class="alert">{% trans 'You must be logged in to submit solutions.' %}</div>
 {% endif %}
 {% endblock %}

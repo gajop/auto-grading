@@ -91,7 +91,7 @@ $(document).ready(function() {
                     <li class="nav-header"><a href="{% url 'webservice.views.course.index' %}">{% trans "Courses" %}</a></li>
                     {% for c in shared.courses %}
                         <li {% if c.id == course.id %} class="active" {% endif %}>
-                        <a href="{% url 'webservice.views.course.read' c.id %}">{{c.shortName}}</a>
+                        <a href="{% url 'webservice.views.course.read' c.id %}">{% if c.enrolled %}<b>{{c.shortName}}</b>{% else %}<small>{{c.shortName}}</small>{% endif %}</a>
                         </li>
                     {% endfor %}
                 </ul>
