@@ -5,9 +5,21 @@
 
 addpath(correctPath);
 ts = feval(tests);
+tsClean = {}
+for i = 1:length(ts)
+    if isstruct(ts{i})
+        tsClean{i} = ts{i}
+    else
+        tsClean{i}.name = "test_" int2str(i);
+        tsClean{i}.description = "Test " int2str(i);
+        tsClean{i}.f = ts{i};
+    end
+end
+ts = tsClean;
+
 correctReturns = {};
 for i = 1:length(ts)
-    t = ts{i};
+    t = ts{i}.f;
     correctReturns{i} = t();
 end
 rmpath(correctPath);
@@ -16,7 +28,7 @@ addpath(submittedPath);
 submittedReturns = {};
 errors = {};
 for i = 1:length(ts)
-    t = ts{i};
+    t = ts{i}.f;
     try
         submittedReturns{i} = t();
         errors{i} = 0;
@@ -34,12 +46,12 @@ successfulAmount = 0;
 for i = 1:length(ts)
     correctReturn = correctReturns{i};
     if errors{i} ~= 0
-        outputString = [outputString "Test " int2str(i) " netačan. " errors{i} " \n"];
+        outputString = [outputString "Test " int2str(i) " netačan.||" errors{i} " \n"];
     elseif correctReturn == submittedReturns{i}
-        outputString = [outputString "Test " int2str(i) " tačan.\n"];
+        outputString = [outputString "Test " int2str(i) " tačan.||" ts{i}.description "\n"];
         successfulAmount = successfulAmount + 1;
     else
-        outputString = [outputString "Test " int2str(i) " netačan.\n"];
+        outputString = [outputString "Test " int2str(i) " netačan.||" ts{i}.description "\n"];
     end
 end
 if i == successfulAmount

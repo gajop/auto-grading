@@ -24,9 +24,9 @@ def doTest(correctPath, submittedPath, tests):
             startPrint = False
         elif startPrint:
             lines.append(line)
-    
+
     resultStr = "\n".join(lines)
-    result = {"success":False, "testResults":[]};    
+    result = {"success":False, "testResults":[]};
     for i, line in enumerate(resultStr.split("\n")):
         if "Zadatak netačan" in line:
             result["success"] = False
@@ -35,9 +35,9 @@ def doTest(correctPath, submittedPath, tests):
             result["success"] = True
             #submitMessage.append(line)
         elif "netačan" in line:
-            result["testResults"].append({"success":False, "msg":line})
+            result["testResults"].append({"success":False, "msg":line.split("||")[1]})
         elif "tačan" in line:
-            result["testResults"].append({"success":True, "msg":line})
+            result["testResults"].append({"success":True, "msg":line.split("||")[1]})
     return result
 
 #invoked from docker
