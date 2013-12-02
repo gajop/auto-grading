@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 
 from rest_framework import viewsets, routers
 from webservice.models import Department, Course,  \
@@ -15,6 +15,12 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     model = Department
 class CourseViewSet(viewsets.ModelViewSet):
     model = Course
+class UserViewSet(viewsets.ModelViewSet):
+    model = User            
+class PermissionViewSet(viewsets.ModelViewSet):
+    model = Permission           
+class GroupViewSet(viewsets.ModelViewSet):
+    model = Group            
 #semester dynamic models
 class CourseSessionViewSet(viewsets.ModelViewSet):
     model = CourseSession
@@ -35,21 +41,25 @@ class StudentAnswerFileViewSet(viewsets.ModelViewSet):
     model = StudentAnswerFile
 
 router = routers.DefaultRouter()
-router.register(r'departments', DepartmentViewSet)
-router.register(r'courses', CourseViewSet)
+router.register(r'rest/departments', DepartmentViewSet)
+router.register(r'rest/courses', CourseViewSet)
+router.register(r'rest/users', UserViewSet)
+router.register(r'rest/permissions', PermissionViewSet)
+router.register(r'rest/groups', GroupViewSet)
 
-router.register(r'courseSessions', CourseSessionViewSet)
-router.register(r'studentEnrollments', StudentEnrollmentViewSet)
-router.register(r'tasks', TaskViewSet)
-router.register(r'taskFiles', TaskFileViewSet)
+router.register(r'rest/courseSessions', CourseSessionViewSet)
+router.register(r'rest/studentEnrollments', StudentEnrollmentViewSet)
+router.register(r'rest/tasks', TaskViewSet)
+router.register(r'rest/taskFiles', TaskFileViewSet)
 
-router.register(r'submitRequests', SubmitRequestViewSet)
-router.register(r'studentAnswers', StudentAnswerViewSet)
-router.register(r'studentAnswerTestResults', StudentAnswerTestResultViewSet)
-router.register(r'studentAnswerFiles', StudentAnswerFileViewSet)
+router.register(r'rest/submitRequests', SubmitRequestViewSet)
+router.register(r'rest/studentAnswers', StudentAnswerViewSet)
+router.register(r'rest/studentAnswerTestResults', StudentAnswerTestResultViewSet)
+router.register(r'rest/studentAnswerFiles', StudentAnswerFileViewSet)
 
 urlpatterns = patterns('',
     url(r'^$', 'webservice.views.course.index'),
+    url(r'^', include(router.urls)),
 
     (r'^i18n/', include('django.conf.urls.i18n')),
 
@@ -72,6 +82,7 @@ urlpatterns = patterns('',
 
     url(r'^submit_answer/', 'webservice.views.custom.submit_answer'),
     # Uncomment the next line to enable the admin:
+    url(r'^rest/create_user/', 'webservice.views.custom.create_user'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )

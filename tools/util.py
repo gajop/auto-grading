@@ -13,22 +13,23 @@ def removeObject(url):
 
 # student #
 def portalTest():
-    r = requests.get(url + "/students/", auth=(username, password))
+    r = requests.get(url + "/rest/users/", auth=(username, password))
     data = r.json()
     print(data)
 
 def getAllStudents():
-    r = requests.get(url + "/students/", auth=(username, password))
+    r = requests.get(url + "/rest/users/", auth=(username, password))
     data = r.json()
     return data
 
 def addStudent(studentID, firstName, lastName, department):
-    headers = {'Content-type': 'application/json'}
-    r = requests.post(url + "/students/", data=json.dumps({
-            "studentID":studentID,
-            "firstName":firstName,
-            "lastName":lastName,
-            "department":department
+    headers = {'Content-Type': 'application/json'}
+    r = requests.post(url + "/rest/create_user/", data=json.dumps({
+            "username":studentID,
+            "password":studentID,
+            "first_name":firstName,
+            "last_name":lastName,
+            "is_active":False,
         }),
         auth=(username, password), headers=headers)
     data = r.json()
@@ -36,8 +37,8 @@ def addStudent(studentID, firstName, lastName, department):
 
 # task #
 def addTask(name, description, courseSessionURL):
-    headers = {'Content-type': 'application/json'}
-    r = requests.post(url + "/tasks/", data=json.dumps({
+    headers = {'Content-Type': 'application/json'}
+    r = requests.post(url + "/rest/tasks/", data=json.dumps({
             "name":name,
             "description":description,
             "courseSessionURL":courseSessionURL
@@ -48,37 +49,37 @@ def addTask(name, description, courseSessionURL):
 
 
 def getAllTasks():
-    r = requests.get(url + "/tasks/", auth=(username, password))
+    r = requests.get(url + "/rest/tasks/", auth=(username, password))
     data = r.json()
     return data
 
 # department #
 def getAllDepartments():
-    r = requests.get(url + "/departments/", auth=(username, password))
+    r = requests.get(url + "/rest/departments/", auth=(username, password))
     data = r.json()
     return data
 
 # course #
 def getAllCourses():
-    r = requests.get(url + "/courses/", auth=(username, password))
+    r = requests.get(url + "/rest/courses/", auth=(username, password))
     data = r.json()
     return data
 
 # course session #
 def getAllCourseSessions():
-    r = requests.get(url + "/courseSessions/", auth=(username, password))
+    r = requests.get(url + "/rest/courseSessions/", auth=(username, password))
     data = r.json()
     return data
 
 # student enrollment #
 def getAllStudentEnrollments():
-    r = requests.get(url + "/studentEnrollments/", auth=(username, password))
+    r = requests.get(url + "/rest/studentEnrollments/", auth=(username, password))
     data = r.json()
     return data
 
 def enrollStudent(studentID, courseSessionID):
-    headers = {'Content-type': 'application/json'}
-    r = requests.post(url + "/studentEnrollments/", data=json.dumps({
+    headers = {'Content-Type': 'application/json'}
+    r = requests.post(url + "/rest/studentEnrollments/", data=json.dumps({
             "student":studentID,
             "courseSession":courseSessionID
         }),

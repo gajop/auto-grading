@@ -35,7 +35,7 @@ def parseHTMLString(htmlString):
                 studentFields = studentTD.find_all("td")
                 redniBrojStr = unicode(studentFields[0].contents[0])
                 indexStr = unicode(studentFields[1].contents[0])
-                indexStr = "".join(indexStr.split()).replace("\\","/")
+                indexStr = "".join(indexStr.split()).replace("\\","/").replace("/","-")
                 prezimeStr = unicode(studentFields[2].contents[0]).strip()
                 imeStr = unicode(studentFields[3].contents[0]).strip()
 
@@ -68,7 +68,7 @@ def uploadStudentsToSite(students):
         #checks if student already exists
         if len(currentStudents) > 0:
             studentExists = reduce(operator.add,
-                    [ student.studentID == currentStudent["studentID"]
+                    [ student.studentID == currentStudent["username"]
                         for currentStudent in currentStudents])
         else:
             studentExists = False
@@ -83,6 +83,8 @@ def uploadStudentsToSite(students):
                 print("Cannot add student: " + unicode(student) + " with department (" + unicode(student.department) + ") because no valid course is specified or department doesn't match any of the predefined ones.")
                 continue
             newStudent = util.addStudent(student.studentID, student.firstName, student.lastName, departmentID if departmentID is not None else departmentIDFromCourse)
+            if not "url" in newStudent:
+                continue
             uploadedNumber += 1
 
             if departmentID != departmentIDFromCourse and departmentID is not None and departmentIDFromCourse is not None:

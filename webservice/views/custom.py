@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files import File
 
-from webservice.models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, Task, TaskFile
+from webservice.models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, Task, TaskFile, User
 
 from automatic_grading_ftn import settings
 from webservice.matlab import invoker
@@ -20,6 +20,47 @@ def unzipFile(fileName, unzipFolderPath):
         fd = open(os.path.join(unzipFolderPath, name), "w")
         fd.write(zfile.read(name))
         fd.close()
+
+from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from rest_framework import serializers
+
+import django.contrib.auth as django_auth
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+
+
+class JSONResponse(HttpResponse):
+    """
+    An HttpResponse that renders its content into JSON.
+    """
+    def __init__(self, data, **kwargs):
+        content = JSONRenderer().render(data)
+        kwargs['content_type'] = 'application/json'
+        super(JSONResponse, self).__init__(content, **kwargs)
+
+@api_view(['POST'])
+def create_user(request):
+    if request.user.is_superuser:
+        username = request.DATA['username']
+        password = request.DATA['password']
+        first_name = request.DATA['first_name']
+        last_name = request.DATA['last_name']
+        is_active = request.DATA['is_active']
+        if User.objects.filter(username=username).count == 0:
+            user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name)
+        else:
+            user = User.objects.get(username=username)
+            user.first_name = first_name
+            user.last_name = last_name
+        user.set_password(password)
+        user.is_active = is_active
+        user.save() 
+        serializer = UserSerializer(user)
+        return JSONResponse(serializer.data)
 
 @csrf_exempt
 def submit_answer(request):
