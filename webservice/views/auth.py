@@ -7,9 +7,7 @@ def login(request):
     if request.POST:
         username = request.POST['username']
         password = request.POST['password']
-        print(username, password)
         user = django_auth.authenticate(username=username, password=password)
-        print(user)
         if user is not None:
             if user.is_active:
                 django_auth.login(request, user)
