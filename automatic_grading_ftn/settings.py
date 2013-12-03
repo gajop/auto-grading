@@ -162,7 +162,12 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        },
+        'logfile': {
+            'class': 'logging.handlers.WatchedFileHandler',
+            'filename': 'grading.log'
         }
     },
     'loggers': {
@@ -171,6 +176,18 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        # Might as well log any errors anywhere else in Django
+        'django': {
+            'handlers': ['logfile'],
+            'level': 'ERROR',
+            'propagate': False
+        },
+        # Your own app - this assumes all your logger names start with "myapp."
+        'webservice': {
+            'handlers': ['logfile'],
+            'level': 'WARNING', # Or maybe INFO or DEBUG
+            'propagate': False
+        }
     }
 }
 
