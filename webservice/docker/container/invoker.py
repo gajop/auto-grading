@@ -40,18 +40,17 @@ def doTest(correctPath, submittedPath, tests):
 
 #invoked from docker
 if __name__ == '__main__':
-    if len(sys.argv) > 0:
-        jsonInput = sys.argv[1]
-        inputFiles = json.loads(jsonInput)
-        os.mkdir('correct')
-        os.mkdir('submitted')
-        for filename, fileContent in inputFiles["correct"].iteritems():
-            f = open(os.path.join('correct', filename), "w")
-            f.write(b64decode(fileContent))
-            f.close()
-        for filename, fileContent in inputFiles["submitted"].iteritems():
-            f = open(os.path.join('submitted', filename), "w")
-            f.write(b64decode(fileContent))
-            f.close()
-        results = doTest('correct', 'submitted', inputFiles["tests"])
-        print(json.dumps(results))
+    jsonInput = sys.stdin.read()
+    inputFiles = json.loads(jsonInput)
+    os.mkdir('correct')
+    os.mkdir('submitted')
+    for filename, fileContent in inputFiles["correct"].iteritems():
+        f = open(os.path.join('correct', filename), "w")
+        f.write(b64decode(fileContent))
+        f.close()
+    for filename, fileContent in inputFiles["submitted"].iteritems():
+        f = open(os.path.join('submitted', filename), "w")
+        f.write(b64decode(fileContent))
+        f.close()
+    results = doTest('correct', 'submitted', inputFiles["tests"])
+    print(json.dumps(results))

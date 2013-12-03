@@ -18,8 +18,9 @@ def doTest(correctPath, submittedPath, tests):
         fileContent = open(os.path.join(submittedPath, f)).read()
         filesDict["submitted"][f] = b64encode(fileContent)
 
-    result = api.run("grading", "/usr/bin/python", "/invoker.py", json.dumps(filesDict))
-    result = json.loads(result)
-
-    #result = {"success":True, "testResults":[]}
+    result = api.run("gajop/grading", "/usr/bin/python", "/invoker.py", stdin=json.dumps(filesDict))
+    if result:
+        result = json.loads(result)
+    else:
+        result = {"success":False, "testResults":[{"msg":"Container failed, sorry!", "success":False}]}
     return result
