@@ -198,3 +198,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 LOGIN_REDIRECT_URL = 'webservice.views.course.index'
 #custom user: AUTH_USER_MODEL = 'customauth.MyUser'
+
+#Docker container (default)
+VALIDATION_MODULE = 'webservice.docker'
+
+#Matlab validator
+#VALIDATION_MODULE = 'webservice.matlab'

@@ -30,10 +30,8 @@ def doTest(correctPath, submittedPath, tests):
     for i, line in enumerate(resultStr.split("\n")):
         if "Zadatak netačan" in line:
             result["success"] = False
-            #submitMessage.append(line)
         elif "Zadatak tačan" in line:
             result["success"] = True
-            #submitMessage.append(line)
         elif "netačan" in line:
             result["testResults"].append({"success":False, "msg":line.split("||")[1]})
         elif "tačan" in line:

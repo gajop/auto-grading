@@ -5,13 +5,13 @@
 
 addpath(correctPath);
 ts = feval(tests);
-tsClean = {}
+tsClean = cell(length(ts));
 for i = 1:length(ts)
     if isstruct(ts{i})
         tsClean{i} = ts{i}
     else
-        tsClean{i}.name = "test_" int2str(i);
-        tsClean{i}.description = "Test " int2str(i);
+        tsClean{i}.name = ["test_" int2str(i)];
+        tsClean{i}.err = ["Test " int2str(i)];
         tsClean{i}.f = ts{i};
     end
 end
@@ -48,10 +48,10 @@ for i = 1:length(ts)
     if errors{i} ~= 0
         outputString = [outputString "Test " int2str(i) " netačan.||" errors{i} " \n"];
     elseif correctReturn == submittedReturns{i}
-        outputString = [outputString "Test " int2str(i) " tačan.||" ts{i}.description "\n"];
+        outputString = [outputString "Test " int2str(i) " tačan.||Uspešno \n"];
         successfulAmount = successfulAmount + 1;
     else
-        outputString = [outputString "Test " int2str(i) " netačan.||" ts{i}.description "\n"];
+        outputString = [outputString "Test " int2str(i) " netačan.||" ts{i}.err "\n"];
     end
 end
 if i == successfulAmount
