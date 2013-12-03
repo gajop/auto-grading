@@ -4,7 +4,7 @@ from settings import *
 
 DEBUG = TEMPLATE_DEBUG = False
 
-DATABASES['default']['name'] = '/home/grading/database.db'
+DATABASES['default']['NAME'] = '/home/grading/database.db'
 
 ALLOWED_HOSTS = ['*']
 
