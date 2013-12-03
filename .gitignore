@@ -5,3 +5,4 @@ database.db
 tools/*.html
 uploads/
 django.mo
+grading.log

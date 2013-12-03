@@ -10,4 +10,4 @@ ALLOWED_HOSTS = ['*']
 
 MEDIA_ROOT = '/home/gajop/grading/uploads'
 STATIC_ROOT = '/home/gajop/grading/webservice/static'
-LOGGING['handlers']['logfile']['filename'] = 'grading.log'
+LOGGING['handlers']['logfile']['filename'] = '/var/log/django/grading.log'
