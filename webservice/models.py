@@ -96,7 +96,7 @@ class TaskFile(models.Model):
     fileType = models.IntegerField(choices=TYPE_CHOICES, null=True, blank=True)
     public = models.BooleanField(default=True, blank=True)
     def __unicode__(self):
-        return unicode(self.task) + " " + unicode(self.taskFile.name) + " Test: " + self.fileType + " Public: " + self.public
+        return unicode(self.task) + " " + unicode(self.taskFile.name) + " Test: " + unicode(self.fileType) + " Public: " + unicode(self.public)
     def filename(self):
         return os.path.basename(self.taskFile.name)
 
