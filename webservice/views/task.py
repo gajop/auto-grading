@@ -5,9 +5,9 @@ from django.forms import ModelChoiceField
 from django.shortcuts import  render, redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 
-from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileFormat, FileFormat
+from webservice.models import Task, TaskFile, CourseSession, CourseSessionTeacher, CourseFileFormat, FileFormat, StudentEnrollment
 from webservice.forms import TaskForm, TaskFileForm
-from webservice.views.shared import getShared, userIsTeacher
+from webservice.views.shared import getShared, userIsTeacher, studentIsEnrolled
 from webservice.submit import processAnswer
 
 def getFormErrors(form):
@@ -16,7 +16,8 @@ def getFormErrors(form):
 @login_required
 def submitAnswer(request, id):
     task = Task.objects.get(id=id)
-    if request.method == 'POST':
+    enrolled = studentIsEnrolled(request.user, task.courseSession)
+    if enrolled and request.method == 'POST':
         #list of tuples (filename, file)
         files = []
         for i, uploadedFile in enumerate(request.FILES.getlist('files[]')):
@@ -116,9 +117,11 @@ def read(request, id):
     if not isTeacher:
         taskFiles = taskFiles.filter(public = True)
 
+    enrolled = studentIsEnrolled(request.user, task.courseSession)
+
     return render(request,
                   'task/read.html',
-                  {'task':task, 'taskFiles':taskFiles, 'course':course,'isTeacher':isTeacher,
+                  {'task':task, 'taskFiles':taskFiles, 'course':course, 'isTeacher':isTeacher, 'enrolled':enrolled,
                    'layout':layout, 'shared':getShared(request)})
 
 

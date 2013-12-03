@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-01 18:50+0100\n"
+"POT-Creation-Date: 2013-12-02 16:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,11 +30,19 @@ msgstr "Prijava"
 msgid "Courses"
 msgstr "Predmeti"
 
-#: templates/course/index.html:18 templates/course/read.html:31
+#: templates/base.html:93
+msgid "Enrolled"
+msgstr "Upisani"
+
+#: templates/base.html:100
+msgid "Other"
+msgstr "Ostali"
+
+#: templates/course/index.html:18
 msgid "More"
 msgstr "Detalji"
 
-#: templates/course/index.html:25
+#: templates/course/index.html:26
 msgid "Add course"
 msgstr "Dodavanje predmeta"
 
@@ -42,11 +50,16 @@ msgstr "Dodavanje predmeta"
 msgid "Tasks"
 msgstr "Zadaci"
 
-#: templates/course/read.html:19
+#: templates/course/read.html:19 templates/task/create.html:117
 msgid "Add task"
 msgstr "Dodavanje zadatka"
 
-#: templates/course/read.html:26 templates/task/read.html:133
+#: templates/course/read.html:26 templates/task/create.html:132
+#: templates/task/read.html:154
+msgid "Name"
+msgstr "Ime"
+
+#: templates/course/read.html:33 templates/task/read.html:132
 msgid "Hidden"
 msgstr "Sakriveno"
 
@@ -54,13 +67,29 @@ msgstr "Sakriveno"
 msgid "Delete"
 msgstr "Brisanje"
 
-#: templates/task/create.html:126 templates/task/read.html:150
+#: templates/registration/activate.html:13
+msgid "Username"
+msgstr "Korisnički nalog"
+
+#: templates/registration/activate.html:16
+msgid "Old password"
+msgstr "Stara lozinka"
+
+#: templates/registration/activate.html:19
+msgid "New password"
+msgstr "Nova lozinka"
+
+#: templates/registration/activate.html:22
+msgid "Repeat new password"
+msgstr "Nova lozinka (ponovo)"
+
+#: templates/registration/activate.html:25
+msgid "Activate"
+msgstr "Aktivacija"
+
+#: templates/task/create.html:126 templates/task/read.html:148
 msgid "Add files"
 msgstr "Dodaj fajlove"
-
-#: templates/task/create.html:132 templates/task/read.html:156
-msgid "Name"
-msgstr "Ime"
 
 #: templates/task/create.html:133
 msgid "Format"
@@ -74,26 +103,35 @@ msgstr "Tip"
 msgid "Public"
 msgstr "Javno"
 
-#: templates/task/read.html:142
-msgid "Submit answer"
-msgstr "Slanje rešenja"
-
-#: templates/task/read.html:148
+#: templates/task/read.html:122
 msgid "Files"
 msgstr "Fajlovi"
 
-#: templates/task/read.html:164
-msgid "Submit"
-msgstr "Slanje"
+#: templates/task/read.html:141
+msgid "Submit answer"
+msgstr "Slanje rešenja"
 
-#: templates/task/read.html:170
+#: templates/task/read.html:162
+msgid "Check"
+msgstr "Uporedi"
+
+#: templates/task/read.html:168
 msgid "Results"
 msgstr "Rezultati"
 
-#: templates/task/read.html:175
+#: templates/task/read.html:173
 msgid "Message"
 msgstr "Poruka"
 
-#: templates/task/read.html:176
+#: templates/task/read.html:174
 msgid "Success"
 msgstr "Uspešno"
+
+#: templates/task/read.html:183
+msgid "You must be enrolled in this course to submit solutions."
+msgstr "Morate biti upisani na predmet da bi ste poslali rešenja."
+
+#: templates/task/read.html:185
+msgid "You must be logged in to submit solutions."
+msgstr "Morate biti ulogovani da bi ste poslali rešenja"
+

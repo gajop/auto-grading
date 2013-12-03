@@ -83,8 +83,6 @@ def uploadStudentsToSite(students):
                 print("Cannot add student: " + unicode(student) + " with department (" + unicode(student.department) + ") because no valid course is specified or department doesn't match any of the predefined ones.")
                 continue
             newStudent = util.addStudent(student.studentID, student.firstName, student.lastName, departmentID if departmentID is not None else departmentIDFromCourse)
-            if not "url" in newStudent:
-                continue
             uploadedNumber += 1
 
             if departmentID != departmentIDFromCourse and departmentID is not None and departmentIDFromCourse is not None:
