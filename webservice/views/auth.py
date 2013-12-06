@@ -1,5 +1,10 @@
-import django.contrib.auth as django_auth
 from django.shortcuts import  render, redirect
+from django.utils.translation import ugettext as _
+
+import django.contrib.auth as django_auth
+from django.contrib import messages
+
+
 from webservice.views.shared import getShared
 
 def login(request):
@@ -14,6 +19,7 @@ def login(request):
                 return redirect('webservice.views.course.index')
             else:
                 return redirect('webservice.views.auth.activate')
+        messages.error(request, _('Incorrect username or password.'))
     return redirect('webservice.views.course.index')
 
 def logout(request):
@@ -31,10 +37,10 @@ def activate(request):
         if password1 != password2:
             err = "Passwords aren't matching"
         elif len(password1) < 3:
-            err = "Password must be at least 3 characters long"            
+            err = "Password must be at least 3 characters long"
         else:
             user = django_auth.authenticate(username=username, password=oldpassword)
-            if user is not None:    
+            if user is not None:
                 if not user.is_active:
                     user.set_password(password1)
                     user.is_active = True
@@ -43,7 +49,7 @@ def activate(request):
                     return redirect('webservice.views.course.index')
                 else: #user is already active, wrong!
                     return redirect('webservice.views.course.index')
-    
-    return render(request, 'registration/activate.html', 
+
+    return render(request, 'registration/activate.html',
             {'err':err, 'username':username, 'oldpassword':oldpassword, 'password1':password1, 'password2':password2, 'shared':getShared(request)})
 
