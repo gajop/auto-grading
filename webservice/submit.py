@@ -1,6 +1,6 @@
 import os
 
-from automatic_grading_ftn import settings
+from django.conf import settings
 
 from webservice.models import Task, TaskFile, StudentAnswer, StudentAnswerTestResult, StudentAnswerFile
 

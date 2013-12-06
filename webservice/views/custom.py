@@ -10,7 +10,7 @@ from django.core.files import File
 
 from webservice.models import SubmitRequest, StudentAnswer, StudentAnswerFile, StudentAnswerTestResult, Task, TaskFile, User
 
-from automatic_grading_ftn import settings
+from django.conf import settings
 from webservice.matlab import invoker
 
 def unzipFile(fileName, unzipFolderPath):
@@ -58,7 +58,7 @@ def create_user(request):
             user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name)
         user.set_password(password)
         user.is_active = is_active
-        user.save() 
+        user.save()
         serializer = UserSerializer(user)
         return JSONResponse(serializer.data)
 
