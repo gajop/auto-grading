@@ -56,3 +56,6 @@ sudo service docker restart
 
 8. Build 'grading', a docker image (run from webservice/docker/container)
 docker build -t grading .
+
+9. Compile i18n (from webservice, in virtualenv)
+django-admin.py compilemessages
