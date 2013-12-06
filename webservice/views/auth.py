@@ -30,20 +30,21 @@ def logout(request):
 def activate(request):
     django_auth.logout(request)
 
-    messages.warning(request, _('Welcome! As this is your first login, you need to create a new password.'))
     if request.method == 'POST':
         form = UserActivationForm(request.POST)
         if form.is_valid():
-            user = form.cleaned_data["user"]
+            user = form.user
             if not user.is_active:
-                user.set_password()
+                user.set_password(form.cleaned_data["newPassword"])
                 user.is_active = True
                 user.save()
                 django_auth.login(request, user)
+                messages.success(request, _("Account successfully activated."))
                 return redirect('webservice.views.course.index')
             else: #user is already active, wrong!
                 return redirect('webservice.views.course.index')
     else:
+        messages.warning(request, _('Welcome! As this is your first login, you need to create a new password.'))
         form = UserActivationForm()
 
     return render(request, 'registration/activate.html',

@@ -12,7 +12,7 @@
 <form method="post" action="{% url 'webservice.views.auth.activate' %}">
 {% csrf_token %}
 {{form|as_bootstrap}}
-<input class="btn btn-primary" type="submit" value="Activate"/>
+<input class="btn btn-primary" type="submit" value="{% trans 'Activate' %}"/>
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
