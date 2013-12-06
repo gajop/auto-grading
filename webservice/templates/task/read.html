@@ -94,7 +94,8 @@ $(function () {
         }
     });
 
-    $("#answerForm").submit(function(e) {
+    $("#submitBtn").click(function(e) {
+        event.preventDefault();
         var filesArray = [];
         $.each(window.allFiles, function(key, value) {
             console.log(key, value)
@@ -106,7 +107,6 @@ $(function () {
             $("#loaderGif").show();
             $("#fileupload").fileupload('send', {files:filesArray});
         }
-        event.preventDefault();
     });
 });
 </script>
@@ -159,7 +159,7 @@ $(function () {
     </table>
 
     <hr/>
-    <input value="{% trans 'Check' %}" type="submit" id="submitBtn" class="btn btn-primary" />
+    <input value="{% trans 'Check' %}" type="button" id="submitBtn" class="btn btn-primary" />
     <img id="loaderGif" hidden src="{% static "gif/ajax-loader.gif" %}"/>
 </form>
 

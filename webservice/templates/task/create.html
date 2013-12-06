@@ -23,6 +23,7 @@ $(function () {
         dataType: 'json',
         done: function (e, data) {
             $("#submitBtn").prop('disabled', false);
+            $("#loaderGif").hide();
             result = data.result;
             if (result.success) {
                 $(location).attr('href', "{% url 'webservice.views.course.read' course.id %}");
@@ -38,6 +39,7 @@ $(function () {
         },
         error: function(e, data) {
             $("#submitBtn").prop('disabled', false);
+            $("#loaderGif").hide();
             //alert("error happened");
         },
         add: function (e, data) {
@@ -90,10 +92,8 @@ $(function () {
         }
     });
 
-    $("#taskForm").submit(function(e) {
-        $("#submitBtn").prop('disabled', true);
-        $("span.error").remove();
-        $(".error").removeClass("error");
+    $("#submitBtn").click(function(e) {
+        event.preventDefault();
         var filesArray = [];
         $.each(window.allFiles, function(key, value) {
             console.log(key, value)
@@ -103,8 +103,11 @@ $(function () {
             $('select[name=form-' + key + 'fileType]').attr('name', 'form-' + index + 'fileType');
             $('input[name=form-' + key + 'publicFile]').attr('name', 'form-' + index + 'publicFile');
         });
+        $("#submitBtn").prop('disabled', true);
+        $("span.error").remove();
+        $(".error").removeClass("error");
+        $("#loaderGif").show();
         $("#fileupload").fileupload('send', {files:filesArray});
-        event.preventDefault();
     });
 });
 </script>
@@ -139,7 +142,8 @@ $(function () {
     </table>
 
     <hr/>
-    <input type="submit" id="submitBtn" class="text btn btn-primary" />
+    <input type="button" id="submitBtn" class="text btn btn-primary" value="{% trans 'Submit' %}"/>
+    <img id="loaderGif" hidden src="{% static "gif/ajax-loader.gif" %}"/>
 
 </form>
 {% endblock %}
