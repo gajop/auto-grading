@@ -29,18 +29,21 @@ def logout(request):
 def activate(request):
     err = username = password1 = password2 = oldpassword = None
     django_auth.logout(request)
+
+    if request.GET:
+        messages.warning(request, _('Welcome! As this is your first login, you need to create a new password.'))
     if request.POST:
         username = request.POST['username']
         oldpassword = request.POST['oldpassword']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-        if password1 != password2:
-            err = "Passwords aren't matching"
-        elif len(password1) < 3:
-            err = "Password must be at least 3 characters long"
-        else:
-            user = django_auth.authenticate(username=username, password=oldpassword)
-            if user is not None:
+        user = django_auth.authenticate(username=username, password=oldpassword)
+        if user is not None:
+            if password1 != password2:
+                err = "Passwords aren't matching"
+            elif len(password1) < 3:
+                err = "Password must be at least 3 characters long"
+            else:
                 if not user.is_active:
                     user.set_password(password1)
                     user.is_active = True
@@ -49,6 +52,8 @@ def activate(request):
                     return redirect('webservice.views.course.index')
                 else: #user is already active, wrong!
                     return redirect('webservice.views.course.index')
+        else:
+            err = "Incorrect username or password"
 
     return render(request, 'registration/activate.html',
             {'err':err, 'username':username, 'oldpassword':oldpassword, 'password1':password1, 'password2':password2, 'shared':getShared(request)})

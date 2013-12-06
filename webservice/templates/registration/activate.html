@@ -5,7 +5,7 @@
 {% block content %}
 
 {% if err %}
-<span class="alert">{{err}}</span>
+<span class="alert-error">{{err}}</span>
 {% endif %}
 
 <form method="post" action="{% url 'webservice.views.auth.activate' %}">
