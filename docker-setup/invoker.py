@@ -10,9 +10,9 @@ scriptPath = os.path.realpath(__file__)
 
 def doTest(correctPath, submittedPath, tests):
     tests = tests.rstrip('.m')
-    output = subprocess.check_output(["octave", "--eval", \
+    output, errors = subprocess.check_output(["octave", "--eval", \
         "correctPath = '{0}'; submittedPath = '{1}'; tests='{2}'".format(correctPath, submittedPath, tests),
-        os.path.join(os.path.dirname(scriptPath), "runner.m")])
+        os.path.join(os.path.dirname(scriptPath), "runner.m")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     lines = []
     startPrint = False
