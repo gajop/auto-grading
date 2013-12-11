@@ -9,6 +9,8 @@ def run(image, command, *args, **kwargs):
     invocation = ["/usr/bin/docker", "run"]
     if "stdin" in kwargs:
         invocation.extend(["-i", "-a", "stdin"])
+    if "m" in kwargs:
+        invocation.append("-m=" + kwargs["m"])
     invocation.extend([image, command])
     invocation.extend(list(args))
 

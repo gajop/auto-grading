@@ -7,7 +7,11 @@ import sys
 import json
 from base64 import b64encode, b64decode
 
-from webservice.command import Command
+#hack that allows command to be imported in both VM and host
+try:
+    from webservice.command import Command
+except:
+    from command import Command
 
 scriptPath = os.path.realpath(__file__)
 
@@ -42,6 +46,9 @@ def doTest(correctPath, submittedPath, tests):
             result["testResults"].append({"success":False, "msg":line.split("||")[1]})
         elif "tačan" in line:
             result["testResults"].append({"success":True, "msg":line.split("||")[1]})
+
+    if error:
+        result["error"] = error
     return result
 
 #invoked from docker

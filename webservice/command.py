@@ -2,7 +2,6 @@
 import threading
 import subprocess
 import traceback
-import shlex
 
 class Command(object):
     """
@@ -17,8 +16,6 @@ class Command(object):
     output, error = '', ''
 
     def __init__(self, command):
-        if isinstance(command, basestring):
-            command = shlex.split(command)
         self.command = command
         self.process = None
 
@@ -26,6 +23,7 @@ class Command(object):
         """ Run a command then return: (status, output, error). """
         def target(**kwargs):
             try:
+                self.process = subprocess.Popen(self.command, **kwargs)
                 self.output, self.error = self.process.communicate()
                 self.status = self.process.returncode
             except:
@@ -37,12 +35,12 @@ class Command(object):
         if 'stderr' not in kwargs:
             kwargs['stderr'] = subprocess.PIPE
         # thread
-        self.process = subprocess.Popen(self.command, **kwargs)
         thread = threading.Thread(target=target, kwargs=kwargs)
         thread.start()
         thread.join(timeout)
         if thread.is_alive():
-            self.process.terminate()
+            if self.process:
+                self.process.terminate()
             thread.join()
             self.status = None
             self.output, self.error = '', ''

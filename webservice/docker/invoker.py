@@ -8,6 +8,7 @@ from base64 import b64decode, b64encode
 import api
 
 scriptPath = os.path.realpath(__file__)
+MEMORY_LIMIT = "128M"
 
 def doTest(correctPath, submittedPath, tests):
     filesDict = {"correct":{}, "submitted":{}, "tests":tests}
@@ -18,9 +19,12 @@ def doTest(correctPath, submittedPath, tests):
         fileContent = open(os.path.join(submittedPath, f)).read()
         filesDict["submitted"][f] = b64encode(fileContent)
 
-    result = api.run("grading", "/usr/bin/python", "/invoker.py", stdin=json.dumps(filesDict))
+    result = api.run("grading", "/usr/bin/python", "/invoker.py", stdin=json.dumps(filesDict), m=MEMORY_LIMIT)
     if result:
-        result = json.loads(result)
+        try:
+            result = json.loads(result)
+        except:
+            print("Failed to parse json: " + str(result))
     else:
         result = {"success":False, "testResults":[{"msg":"Container failed, sorry!", "success":False}]}
     return result
