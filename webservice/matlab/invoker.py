@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
-import subprocess
-import os.path
 import os
+import os.path
+
+import subprocess
 import sys
 import json
 from base64 import b64encode, b64decode
+
+from webservice.command import Command
 
 scriptPath = os.path.realpath(__file__)
 
 def doTest(correctPath, submittedPath, tests):
     tests = tests.rstrip('.m')
-    output, errors = subprocess.check_output(["octave", "--eval", \
-        "correctPath = '{0}'; submittedPath = '{1}'; tests='{2}'".format(correctPath, submittedPath, tests),
-        os.path.join(os.path.dirname(scriptPath), "runner.m")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    command = Command(["octave", "--eval", "correctPath = '{0}'; submittedPath = '{1}'; tests='{2}'".format(correctPath, submittedPath, tests), os.path.join(os.path.dirname(scriptPath), "runner.m")])
+    status, output, error = command.run(timeout=5, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    if status is None:
+        result = {"success":False, "testResults":[{"success":False,"msg":"Isteklo vreme"}]}
+        return result
 
     lines = []
     startPrint = False
