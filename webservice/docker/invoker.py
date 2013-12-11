@@ -18,7 +18,7 @@ def doTest(correctPath, submittedPath, tests):
         fileContent = open(os.path.join(submittedPath, f)).read()
         filesDict["submitted"][f] = b64encode(fileContent)
 
-    result = api.run("gajop/grading-git", "/usr/bin/python", "/invoker.py", stdin=json.dumps(filesDict))
+    result = api.run("grading", "/usr/bin/python", "/invoker.py", stdin=json.dumps(filesDict))
     if result:
         result = json.loads(result)
     else:
