@@ -54,7 +54,7 @@ sudo gpasswd -a ${USERNAME} docker
 # Restart the docker daemon.
 sudo service docker restart
 
-8. Build 'grading', a docker image (run from webservice/docker/container)
+8. Build 'grading', a docker image (run from docker-setup) based on gajop/grading-base
 docker build -t grading .
 
 9. Compile i18n (from webservice, in virtualenv)
