@@ -61,6 +61,10 @@ urlpatterns = patterns('',
     url(r'^$', 'webservice.views.course.index'),
     url(r'^', include(router.urls)),
 
+#not used atm
+# url(r'^oauth2/', include('provider.oauth2.urls', namespace = 'oauth2')),
+    url(r'^lti_launch',  'webservice.views.lti.lti_launch'),
+
     (r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^login$',  'webservice.views.auth.login'),

@@ -24,6 +24,8 @@ pip install markdown
 pip install django-filter
 pip install pyyaml
 pip install django-bootstrap-toolkit
+#not used atm:
+#pip install django-oauth2-provider
 
 3. Use the environment.
 Run this once for each shell:

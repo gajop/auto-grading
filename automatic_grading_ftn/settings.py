@@ -113,6 +113,11 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'webservice.backends.LTIBackend',
+)
+
 ROOT_URLCONF = 'automatic_grading_ftn.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
@@ -135,6 +140,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    #oauth - not used atm
+    #'provider',
+    #'provider.oauth2',
 
     #custom
     'rest_framework',

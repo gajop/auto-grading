@@ -37,7 +37,7 @@ $(document).ready(function() {
 </head>
 
 <body>
-
+    {% if not shared.using_lti %}
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
@@ -81,11 +81,13 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
+    {% endif %}
     <div class="container">
         <div class="messages">
             {% bootstrap_messages %}
         </div>
         <div class="row">
+            {% if not shared.using_lti %}
             <div class="span2">
                 <ul class="nav nav-list">
                     <li class="nav-header"><a href="{% url 'webservice.views.course.index' %}">{% trans "Courses" %}</a></li>
@@ -109,6 +111,7 @@ $(document).ready(function() {
                     {% endfor %}
                 </ul>
             </div>
+            {% endif %}
             <div class="span10">
                 <div id="content">
                         {% block content %}{% endblock %}

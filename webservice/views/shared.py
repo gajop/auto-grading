@@ -23,7 +23,8 @@ def getShared(request):
     s = {
         'menu' : mainMenu(request),
         'enrolledCourses' : enrolledCourses,
-        'courses' : courses
+        'courses' : courses,
+        'using_lti' : 'using_lti' in request.session and request.session['using_lti'] == True
     }
     return s
 

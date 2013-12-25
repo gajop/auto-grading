@@ -10,7 +10,7 @@ from webservice.views.shared import getShared
 
 def login(request):
     django_auth.logout(request)
-    if request.POST:
+    if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = django_auth.authenticate(username=username, password=password)

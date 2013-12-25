@@ -38,7 +38,7 @@ class Course(models.Model):
     name = models.CharField(max_length=200)
     shortName = models.CharField(max_length=10)
     description = models.CharField(max_length=10000, blank=True)
-    department = models.ForeignKey(Department)
+    department = models.ForeignKey(Department, null=True)
     def __unicode__(self):
         return self.name
 
@@ -126,3 +126,12 @@ class StudentAnswerFile(models.Model):
     answerFile = models.FileField(upload_to=partial(groupFilesForSubmitAnswer, "student_answer_file", "answer_file"))
     def __unicode__(self):
         return unicode(self.studentAnswer) + " " + unicode(self.answerFile.name)
+
+#LTI models
+class LTIUser(models.Model):
+    lti_user_id = models.CharField(primary_key=True, max_length=100)
+    user = models.ForeignKey(User)
+
+class LTICourse(models.Model):
+    context_id = models.CharField(primary_key=True, max_length=100)
+    course = models.ForeignKey(Course)
