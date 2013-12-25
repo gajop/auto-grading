@@ -20,10 +20,13 @@ def lti_launch(request):
             lti_version = form.cleaned_data['lti_version']
             resource_link_id = form.cleaned_data['resource_link_id']
 
-            if 'launch_presentation_locale' in form.cleaned_data:
+            #set locale
+            try:
                 locale = form.cleaned_data['launch_presentation_locale']
                 #FIXME: isn't properly setting the user language
                 translation.activate(locale) 
+            except Excetion as e:
+                print(e)
             
             #get course info
             try:
@@ -67,9 +70,9 @@ def lti_launch(request):
             except Exception as e:
                 print(e)
             
-            #get user role
-            for role in form.cleaned_data["roles"].split(","):
-                try:
+            #get user roles
+            try:
+                for role in form.cleaned_data["roles"].split(","):
                     if role.lower() == "instructor":
                         try:
                             teachers = CourseSessionTeacher.objects.filter(courseSession=courseSession)
@@ -87,8 +90,9 @@ def lti_launch(request):
                             studentEnrollment = StudentEnrollment(student=user, courseSession=courseSession)
                             studentEnrollment.save()
 
-                except Exception as e:
-                    print(e)
+            except Exception as e:
+                print(e)
+
             if course:
                 return redirect('webservice.views.course.read', course.id)
     return redirect('webservice.views.course.index')

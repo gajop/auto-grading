@@ -7,10 +7,12 @@
 
 {% block content %}
 
+{% if not shared.using_lti %}
 <div class="well">
     <h3>{{course.shortName}} - {{course.name}}</h3>
     <p>{{course.description}}</p>
 </div>
+{% endif %}
 
 <h4>{% trans 'Tasks' %}:</h4>
 <hr/>
